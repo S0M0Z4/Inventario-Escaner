@@ -686,7 +686,7 @@
                 
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
                     <button id="loadData" class="btn btn-primary">
-                        📥 Cargar desde Excel
+                        📥 Cargar desde Excel/CSV
                     </button>
                     <button id="exportData" class="btn btn-success">
                         📤 Exportar a Excel
@@ -787,8 +787,8 @@
             // Configurar navegación por pestañas
             setupTabs();
             
-            // Intentar cargar datos de ejemplo si la base está vacía
-            checkAndLoadSampleData();
+            // NO cargar datos de ejemplo automáticamente
+            // La base de datos comenzará vacía
         });
         
         // ============================================
@@ -1358,6 +1358,200 @@ _Escaneado con la app de inventario COBATAB_`;
         }
         
         // ============================================
+        // CARGA DE DATOS DESDE ARCHIVOS
+        // ============================================
+        async function loadDataFromFile() {
+            try {
+                // Crear input de archivo invisible
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.csv,.txt,.xlsx,.xls,.xlsm';
+                fileInput.style.display = 'none';
+                
+                fileInput.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        document.body.removeChild(fileInput);
+                        return;
+                    }
+                    
+                    // Validar tipo de archivo
+                    const validExtensions = ['.csv', '.txt', '.xlsx', '.xls', '.xlsm'];
+                    const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+                    
+                    if (!validExtensions.includes(fileExt)) {
+                        showError('Tipo de archivo no válido. Use CSV (.csv) o Excel (.xlsx, .xls)');
+                        document.body.removeChild(fileInput);
+                        return;
+                    }
+                    
+                    // Mostrar mensaje de carga
+                    showMessage(`📁 Procesando ${file.name}...`, 'info');
+                    
+                    // Leer archivo
+                    const reader = new FileReader();
+                    
+                    reader.onload = async (event) => {
+                        try {
+                            const content = event.target.result;
+                            let products = [];
+                            
+                            if (fileExt === '.csv' || fileExt === '.txt') {
+                                products = parseCSVData(content);
+                            } else if (fileExt === '.xlsx' || fileExt === '.xls' || fileExt === '.xlsm') {
+                                // Para Excel, mostrar mensaje sobre formato
+                                showMessage('ℹ️ Para archivos Excel complejos, convierte primero a CSV', 'info');
+                                // Intentar leer como CSV si es posible
+                                products = parseCSVData(content.toString());
+                            }
+                            
+                            // Guardar productos
+                            let savedCount = 0;
+                            let errorCount = 0;
+                            
+                            for (const product of products) {
+                                try {
+                                    // Asignar ID único si no existe
+                                    if (!product.id) {
+                                        product.id = Date.now() + Math.floor(Math.random() * 1000);
+                                    }
+                                    
+                                    await saveProduct(product);
+                                    savedCount++;
+                                } catch (error) {
+                                    console.warn("Error guardando producto:", product, error);
+                                    errorCount++;
+                                }
+                            }
+                            
+                            // Actualizar interfaz
+                            updateProductCount();
+                            
+                            // Mostrar resultado
+                            if (errorCount > 0) {
+                                showMessage(`✅ ${savedCount} productos cargados, ${errorCount} errores`, savedCount > 0 ? 'success' : 'error');
+                            } else {
+                                showMessage(`✅ ${savedCount} productos cargados desde ${file.name}`, 'success');
+                            }
+                            
+                        } catch (error) {
+                            console.error("Error procesando archivo:", error);
+                            showError("Error al procesar el archivo. Verifique el formato.");
+                        }
+                    };
+                    
+                    reader.onerror = () => {
+                        showError("Error al leer el archivo");
+                        document.body.removeChild(fileInput);
+                    };
+                    
+                    // Leer según tipo de archivo
+                    if (fileExt === '.csv' || fileExt === '.txt') {
+                        reader.readAsText(file, 'UTF-8');
+                    } else {
+                        reader.readAsArrayBuffer(file);
+                    }
+                    
+                    document.body.removeChild(fileInput);
+                };
+                
+                fileInput.oncancel = () => {
+                    document.body.removeChild(fileInput);
+                };
+                
+                // Agregar al documento y disparar click
+                document.body.appendChild(fileInput);
+                fileInput.click();
+                
+            } catch (error) {
+                console.error("Error en carga de archivo:", error);
+                showError("Error al cargar archivo: " + error.message);
+            }
+        }
+        
+        function parseCSVData(csvText) {
+            const products = [];
+            const lines = csvText.split('\n');
+            
+            if (lines.length === 0) {
+                return products;
+            }
+            
+            // Buscar encabezados (primera línea no vacía)
+            let headers = [];
+            let startLine = 0;
+            
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    headers = lines[i].split(',').map(h => h.trim().toLowerCase());
+                    startLine = i + 1;
+                    break;
+                }
+            }
+            
+            // Si no hay encabezados, usar valores por defecto
+            if (headers.length === 0) {
+                headers = ['codigo', 'nombre', 'categoria', 'cantidad', 'valor', 'estado', 'ubicacion', 'responsable'];
+                startLine = 0;
+            }
+            
+            // Procesar cada línea
+            for (let i = startLine; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line || line.startsWith('#') || line.startsWith('//')) {
+                    continue;
+                }
+                
+                // Manejar celdas con comas dentro de comillas
+                const values = [];
+                let inQuotes = false;
+                let currentValue = '';
+                
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(currentValue.replace(/^"|"$/g, '').trim());
+                        currentValue = '';
+                    } else {
+                        currentValue += char;
+                    }
+                }
+                values.push(currentValue.replace(/^"|"$/g, '').trim());
+                
+                // Crear objeto producto si hay datos suficientes
+                if (values.length >= 2 && (values[0] || values[1])) {
+                    const product = {
+                        id: Date.now() + i + Math.floor(Math.random() * 1000),
+                        codigo: getCSVValue(values, headers, 'codigo') || `AUTO-${i}`,
+                        nombre: getCSVValue(values, headers, 'nombre') || 'Producto sin nombre',
+                        categoria: getCSVValue(values, headers, 'categoria') || 'General',
+                        cantidad: parseInt(getCSVValue(values, headers, 'cantidad')) || 1,
+                        unidad_medida: getCSVValue(values, headers, 'unidad_medida') || 'unidades',
+                        valor: parseFloat(getCSVValue(values, headers, 'valor')) || 0,
+                        estado: getCSVValue(values, headers, 'estado') || 'disponible',
+                        ubicacion: getCSVValue(values, headers, 'ubicacion') || 'Almacén',
+                        responsable: getCSVValue(values, headers, 'responsable') || 'No asignado',
+                        descripcion: getCSVValue(values, headers, 'descripcion') || '',
+                        fecha_adquisicion: getCSVValue(values, headers, 'fecha_adquisicion') || new Date().toISOString().split('T')[0],
+                        proveedor: getCSVValue(values, headers, 'proveedor') || ''
+                    };
+                    
+                    products.push(product);
+                }
+            }
+            
+            return products;
+        }
+        
+        function getCSVValue(values, headers, headerName) {
+            const index = headers.indexOf(headerName.toLowerCase());
+            return index >= 0 && index < values.length ? values[index] : '';
+        }
+        
+        // ============================================
         // FUNCIONES AUXILIARES
         // ============================================
         function setupEventListeners() {
@@ -1396,10 +1590,11 @@ _Escaneado con la app de inventario COBATAB_`;
             document.getElementById('vibrationToggle').addEventListener('change', saveSettings);
             document.getElementById('autoSaveToggle').addEventListener('change', saveSettings);
             
-            document.getElementById('loadData').addEventListener('click', loadSampleData);
+            // Base de datos
+            document.getElementById('loadData').addEventListener('click', loadDataFromFile);
             document.getElementById('exportData').addEventListener('click', exportToExcel);
             document.getElementById('clearData').addEventListener('click', () => {
-                if (confirm('¿Borrar todos los productos de la base de datos?')) {
+                if (confirm('¿Borrar TODOS los productos de la base de datos?\n\nEsta acción no se puede deshacer.')) {
                     clearAllProducts();
                 }
             });
@@ -1407,7 +1602,7 @@ _Escaneado con la app de inventario COBATAB_`;
             // Botones del header
             document.getElementById('syncBtn').addEventListener('click', syncWithServer);
             document.getElementById('infoBtn').addEventListener('click', () => {
-                alert('App de Inventario COBATAB\n\nVersión: 1.0.0\nModo: Local\n\nEscanea códigos QR para ver información de productos.\nFunciona completamente sin internet.');
+                alert('App de Inventario COBATAB - Plantel 09\n\nVersión: 1.0.0\nModo: Local\n\nFuncionalidades:\n• Escaneo de códigos QR\n• Búsqueda manual\n• Base de datos local\n• Historial de escaneos\n• Exportación a CSV\n\nLa app funciona completamente sin internet.');
             });
         }
         
@@ -1542,135 +1737,40 @@ _Escaneado con la app de inventario COBATAB_`;
         }
         
         // ============================================
-        // CARGA DE DATOS DE EJEMPLO
+        // EXPORTACIÓN A EXCEL/CSV
         // ============================================
-        async function checkAndLoadSampleData() {
-            const products = await getAllProducts();
-            if (products.length === 0) {
-                // Preguntar si quiere cargar datos de ejemplo
-                if (confirm('¿Deseas cargar datos de ejemplo para probar la app?')) {
-                    await loadSampleData();
-                }
-            }
-        }
-        
-        async function loadSampleData() {
-            const sampleProducts = [
-                {
-                    id: 1,
-                    codigo: "PROD-001",
-                    nombre: "Laptop Dell Inspiron 15",
-                    categoria: "Equipo de Cómputo",
-                    descripcion: "Laptop para uso administrativo",
-                    cantidad: 5,
-                    unidad_medida: "unidades",
-                    valor: 15000.00,
-                    estado: "disponible",
-                    ubicacion: "Sala de Profesores",
-                    responsable: "Administración",
-                    fecha_adquisicion: "2023-01-15",
-                    proveedor: "Dell México"
-                },
-                {
-                    id: 2,
-                    codigo: "PROD-002",
-                    nombre: "Proyector Epson EB-X41",
-                    categoria: "Audiovisual",
-                    descripcion: "Proyector para aulas",
-                    cantidad: 3,
-                    unidad_medida: "unidades",
-                    valor: 8000.00,
-                    estado: "en_uso",
-                    ubicacion: "Aula 101",
-                    responsable: "Prof. Juan Pérez",
-                    fecha_adquisicion: "2023-02-20",
-                    proveedor: "Epson"
-                },
-                {
-                    id: 3,
-                    codigo: "PROD-003",
-                    nombre: "Silla Ejecutiva",
-                    categoria: "Mobiliario",
-                    descripcion: "Silla para oficina",
-                    cantidad: 20,
-                    unidad_medida: "unidades",
-                    valor: 1200.00,
-                    estado: "disponible",
-                    ubicacion: "Almacén",
-                    responsable: "Almacén",
-                    fecha_adquisicion: "2023-03-10",
-                    proveedor: "Office Depot"
-                },
-                {
-                    id: 4,
-                    codigo: "PROD-004",
-                    nombre: "Extintor ABC 5kg",
-                    categoria: "Seguridad",
-                    descripcion: "Extintor para incendios",
-                    cantidad: 8,
-                    unidad_medida: "unidades",
-                    valor: 1500.00,
-                    estado: "mantenimiento",
-                    ubicacion: "Pasillos",
-                    responsable: "Seguridad",
-                    fecha_adquisicion: "2022-11-05",
-                    proveedor: "Protección Civil"
-                },
-                {
-                    id: 5,
-                    codigo: "PROD-005",
-                    nombre: "Kit de Laboratorio Química",
-                    categoria: "Laboratorio",
-                    descripcion: "Kit básico para prácticas",
-                    cantidad: 2,
-                    unidad_medida: "kits",
-                    valor: 5000.00,
-                    estado: "disponible",
-                    ubicacion: "Lab. Química",
-                    responsable: "Dra. María López",
-                    fecha_adquisicion: "2023-04-15",
-                    proveedor: "Científica Mérida"
-                }
-            ];
-            
-            try {
-                for (const product of sampleProducts) {
-                    await saveProduct(product);
-                }
-                
-                updateProductCount();
-                showMessage('✅ Datos de ejemplo cargados', 'success');
-                
-            } catch (error) {
-                showError("Error al cargar datos de ejemplo");
-            }
-        }
-        
         async function exportToExcel() {
             try {
                 const products = await getAllProducts();
                 
+                if (products.length === 0) {
+                    showMessage('ℹ️ No hay productos para exportar', 'info');
+                    return;
+                }
+                
                 // Crear contenido CSV
-                let csv = 'Código,Nombre,Categoría,Cantidad,Valor,Estado,Ubicación,Responsable\n';
+                let csv = 'Código,Nombre,Categoría,Cantidad,Unidad de Medida,Valor Unitario,Valor Total,Estado,Ubicación,Responsable,Descripción,Proveedor,Fecha Adquisición\n';
                 
                 products.forEach(product => {
-                    csv += `"${product.codigo}","${product.nombre}","${product.categoria}",${product.cantidad},${product.valor},"${product.estado}","${product.ubicacion}","${product.responsable}"\n`;
+                    const totalValue = (product.valor || 0) * (product.cantidad || 1);
+                    csv += `"${product.codigo || ''}","${product.nombre || ''}","${product.categoria || ''}",${product.cantidad || 0},"${product.unidad_medida || 'unidades'}",${product.valor || 0},${totalValue},"${product.estado || ''}","${product.ubicacion || ''}","${product.responsable || ''}","${product.descripcion || ''}","${product.proveedor || ''}","${product.fecha_adquisicion || ''}"\n`;
                 });
                 
                 // Crear y descargar archivo
-                const blob = new Blob([csv], { type: 'text/csv' });
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `inventario_cobatab_${new Date().getTime()}.csv`;
+                a.download = `inventario_cobatab_${new Date().toISOString().split('T')[0]}.csv`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showMessage('✅ Datos exportados a CSV', 'success');
+                showMessage(`✅ ${products.length} productos exportados a CSV`, 'success');
                 
             } catch (error) {
+                console.error("Error al exportar datos:", error);
                 showError("Error al exportar datos");
             }
         }
@@ -1685,6 +1785,7 @@ _Escaneado con la app de inventario COBATAB_`;
                 showMessage('✅ Base de datos limpiada', 'success');
                 
             } catch (error) {
+                console.error("Error al limpiar base de datos:", error);
                 showError("Error al limpiar base de datos");
             }
         }
@@ -1771,6 +1872,8 @@ _Escaneado con la app de inventario COBATAB_`;
                 font-weight: 600;
                 box-shadow: 0 3px 10px rgba(0,0,0,0.2);
                 animation: slideDown 0.3s ease-out;
+                max-width: 90%;
+                text-align: center;
             `;
             
             // Animación CSS
@@ -1779,6 +1882,10 @@ _Escaneado con la app de inventario COBATAB_`;
                 @keyframes slideDown {
                     from { top: 50px; opacity: 0; }
                     to { top: 100px; opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { top: 100px; opacity: 1; }
+                    to { top: 50px; opacity: 0; }
                 }
             `;
             document.head.appendChild(style);
@@ -1789,7 +1896,11 @@ _Escaneado con la app de inventario COBATAB_`;
             // Remover después de 3 segundos
             setTimeout(() => {
                 messageEl.style.animation = 'slideUp 0.3s ease-out';
-                setTimeout(() => document.body.removeChild(messageEl), 300);
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
             }, 3000);
         }
         
@@ -1798,7 +1909,153 @@ _Escaneado con la app de inventario COBATAB_`;
         }
         
         function syncWithServer() {
-            showMessage('ℹ️ Modo local - La sincronización está desactivada', 'info');
+            showMessage('ℹ️ Modo local activado - La sincronización está desactivada', 'info');
+        }
+        
+        // ============================================
+        // FUNCIONES ADICIONALES DEL PRODUCTO
+        // ============================================
+        function saveProductCard() {
+            if (!currentProduct) return;
+            
+            // Crear texto para guardar
+            const product = currentProduct;
+            const totalValue = (product.valor || 0) * (product.cantidad || 1);
+            
+            const content = `
+INVENTARIO COBATAB - FICHA DE PRODUCTO
+=======================================
+
+Código: ${product.codigo}
+Nombre: ${product.nombre}
+Categoría: ${product.categoria}
+Estado: ${product.estado}
+
+CANTIDAD Y VALOR:
+• Cantidad: ${product.cantidad} ${product.unidad_medida}
+• Valor unitario: $${parseFloat(product.valor).toFixed(2)}
+• Valor total: $${parseFloat(totalValue).toFixed(2)}
+
+UBICACIÓN Y RESPONSABLE:
+• Ubicación: ${product.ubicacion}
+• Responsable: ${product.responsable}
+• Proveedor: ${product.proveedor || 'No especificado'}
+
+INFORMACIÓN ADICIONAL:
+• Fecha adquisición: ${new Date(product.fecha_adquisicion || product.fecha_creacion).toLocaleDateString('es-MX')}
+• Descripción: ${product.descripcion || 'Sin descripción'}
+
+---------------------------------------
+Generado: ${new Date().toLocaleString('es-MX')}
+App: Inventario COBATAB Plantel 09
+            `;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `producto_${product.codigo}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('✅ Ficha guardada como archivo de texto', 'success');
+        }
+        
+        function printProductCard() {
+            if (!currentProduct) return;
+            
+            const product = currentProduct;
+            const totalValue = (product.valor || 0) * (product.cantidad || 1);
+            
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Producto: ${product.codigo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .header { text-align: center; border-bottom: 2px solid #8B0000; padding-bottom: 15px; margin-bottom: 20px; }
+                        .title { color: #8B0000; font-size: 24px; margin: 0; }
+                        .subtitle { color: #666; font-size: 14px; }
+                        .section { margin: 20px 0; }
+                        .section-title { background: #f5f5f5; padding: 8px 15px; font-weight: bold; border-left: 4px solid #8B0000; }
+                        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; }
+                        .info-item { padding: 5px 0; }
+                        .label { font-weight: bold; color: #555; }
+                        .value { color: #333; }
+                        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
+                        @media print {
+                            body { padding: 10px; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1 class="title">COBATAB Plantel 09</h1>
+                        <p class="subtitle">Ficha Técnica de Producto</p>
+                        <p>Fecha de impresión: ${new Date().toLocaleDateString('es-MX')}</p>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">INFORMACIÓN BÁSICA</div>
+                        <div class="info-grid">
+                            <div class="info-item"><span class="label">Código:</span> <span class="value">${product.codigo}</span></div>
+                            <div class="info-item"><span class="label">Nombre:</span> <span class="value">${product.nombre}</span></div>
+                            <div class="info-item"><span class="label">Categoría:</span> <span class="value">${product.categoria}</span></div>
+                            <div class="info-item"><span class="label">Estado:</span> <span class="value">${product.estado}</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">CANTIDAD Y VALOR</div>
+                        <div class="info-grid">
+                            <div class="info-item"><span class="label">Cantidad:</span> <span class="value">${product.cantidad} ${product.unidad_medida}</span></div>
+                            <div class="info-item"><span class="label">Valor unitario:</span> <span class="value">$${parseFloat(product.valor).toFixed(2)}</span></div>
+                            <div class="info-item"><span class="label">Valor total:</span> <span class="value"><strong>$${parseFloat(totalValue).toFixed(2)}</strong></span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">UBICACIÓN Y RESPONSABLE</div>
+                        <div class="info-grid">
+                            <div class="info-item"><span class="label">Ubicación:</span> <span class="value">${product.ubicacion}</span></div>
+                            <div class="info-item"><span class="label">Responsable:</span> <span class="value">${product.responsable}</span></div>
+                            <div class="info-item"><span class="label">Proveedor:</span> <span class="value">${product.proveedor || 'No especificado'}</span></div>
+                        </div>
+                    </div>
+                    
+                    ${product.descripcion ? `
+                    <div class="section">
+                        <div class="section-title">DESCRIPCIÓN</div>
+                        <p>${product.descripcion}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="footer">
+                        <p>Documento generado por la App de Inventario COBATAB</p>
+                        <p>www.cobatab.edu.mx</p>
+                    </div>
+                    
+                    <div class="no-print" style="margin-top: 20px; text-align: center;">
+                        <button onclick="window.print()" style="padding: 10px 20px; background: #8B0000; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            🖨️ Imprimir
+                        </button>
+                        <button onclick="window.close()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+                            ✖️ Cerrar
+                        </button>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            
+            showMessage('✅ Abriendo vista de impresión...', 'success');
         }
         
         // ============================================
