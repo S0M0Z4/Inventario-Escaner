@@ -2,2129 +2,790 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>📱 Inventario COBATAB - Escáner Local</title>
-    
-    <!-- PWA Configuration -->
-    <link rel="manifest" href="/Plantel-09/manifest.json">
-    <meta name="theme-color" content="#8B0000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Anuncios - Iglesia</title>
     <style>
+        /* Estilos generales */
         :root {
-            --color-vino: #8B0000;
-            --color-vino-claro: #a83232;
-            --color-blanco: #FFFFFF;
-            --color-gris: #6c757d;
-            --color-gris-claro: #f8f9fa;
-            --color-verde: #28a745;
-            --color-azul: #007bff;
+            --azul-principal: #1e3a8a;
+            --azul-secundario: #3b82f6;
+            --azul-claro: #dbeafe;
+            --blanco: #ffffff;
+            --gris-claro: #f3f4f6;
+            --gris: #9ca3af;
+            --gris-oscuro: #374151;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--color-vino);
-            color: #333;
+            background-color: var(--gris-claro);
+            color: var(--gris-oscuro);
+            line-height: 1.6;
             min-height: 100vh;
-            overflow-x: hidden;
         }
         
-        .app-container {
-            background: white;
-            min-height: 100vh;
-            border-radius: 30px 30px 0 0;
-            padding: 20px;
-            padding-top: 60px;
-            margin-top: 20px;
-            position: relative;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-        }
-        
-        /* Header Fijo */
-        .app-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: var(--color-vino);
-            color: white;
+        /* Encabezado */
+        .header {
+            background-color: var(--azul-principal);
+            color: var(--blanco);
+            padding: 1.5rem 2rem;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            align-items: center;
+            box-shadow: var(--sombra);
         }
         
-        .logo-container {
+        .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
         }
         
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-vino);
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 2rem;
         }
         
-        .app-title {
-            font-size: 18px;
-            font-weight: 700;
+        /* Formulario de login */
+        .login-container {
+            position: relative;
         }
         
-        .app-subtitle {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: none;
+        .login-btn {
+            background-color: var(--azul-secundario);
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        /* Pestañas de Navegación */
-        .tabs-container {
-            display: flex;
-            background: var(--color-gris-claro);
-            border-radius: 15px;
-            padding: 5px;
-            margin: 20px 0;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
             border: none;
-            background: transparent;
-            color: var(--color-gris);
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
         }
         
-        .tab.active {
-            background: white;
-            color: var(--color-vino);
-            box-shadow: 0 2px 8px rgba(139,0,0,0.1);
+        .login-btn:hover {
+            background-color: #2563eb;
         }
         
-        /* Área del Escáner */
-        .scanner-section {
+        .login-form {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--blanco);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--sombra);
+            width: 300px;
+            display: none;
+            z-index: 100;
+            margin-top: 0.5rem;
+        }
+        
+        .login-form.active {
             display: block;
         }
         
-        .scanner-frame {
+        .login-form h3 {
+            margin-bottom: 1rem;
+            color: var(--azul-principal);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+        
+        .form-group input {
             width: 100%;
-            height: 300px;
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            margin: 20px 0;
+            padding: 0.7rem;
+            border: 1px solid var(--gris);
+            border-radius: 4px;
         }
         
-        #scanner-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--azul-secundario);
         }
         
-        .scanner-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            border: 3px solid var(--color-vino);
-            border-radius: 15px;
-            background: transparent;
-        }
-        
-        .scanner-line {
-            position: absolute;
-            width: 100%;
-            height: 3px;
-            background: var(--color-vino);
-            top: 50%;
-            animation: scan 2s ease-in-out infinite;
-        }
-        
-        @keyframes scan {
-            0% { top: 10%; }
-            50% { top: 90%; }
-            100% { top: 10%; }
-        }
-        
-        /* Controles del Escáner */
-        .scanner-controls {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .btn {
-            flex: 1;
-            padding: 16px;
+        .submit-btn {
+            background-color: var(--azul-principal);
+            color: white;
             border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
+            padding: 0.7rem;
+            width: 100%;
+            border-radius: 4px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            margin-top: 0.5rem;
         }
         
-        .btn-primary {
-            background: var(--color-vino);
+        .submit-btn:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .logout-btn {
+            background-color: #dc2626;
             color: white;
-        }
-        
-        .btn-primary:active {
-            background: var(--color-vino-claro);
-            transform: scale(0.98);
-        }
-        
-        .btn-secondary {
-            background: var(--color-gris-claro);
-            color: var(--color-gris);
-        }
-        
-        .btn-success {
-            background: var(--color-verde);
-            color: white;
-        }
-        
-        .btn-info {
-            background: var(--color-azul);
-            color: white;
-        }
-        
-        /* Resultados */
-        .results-section {
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
             display: none;
         }
         
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 5px solid var(--color-vino);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            animation: fadeIn 0.5s ease-out;
+        .logout-btn:hover {
+            background-color: #b91c1c;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
         }
         
-        .product-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
+        /* Sección de formulario de anuncios */
+        .announcement-form-section {
+            background-color: var(--blanco);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--sombra);
+            margin-bottom: 2rem;
         }
         
-        .product-name {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--color-vino);
-            margin-bottom: 5px;
+        .section-title {
+            color: var(--azul-principal);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--azul-claro);
         }
         
-        .product-code {
-            font-size: 14px;
-            color: var(--color-gris);
-            background: var(--color-gris-claro);
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .status-available { background: #d4edda; color: #155724; }
-        .status-inuse { background: #fff3cd; color: #856404; }
-        .status-maintenance { background: #d1ecf1; color: #0c5460; }
-        .status-low { background: #f8d7da; color: #721c24; }
-        
-        .product-details {
-            margin: 15px 0;
-        }
-        
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--color-gris-claro);
-        }
-        
-        .detail-label {
-            color: var(--color-gris);
-            font-size: 14px;
-        }
-        
-        .detail-value {
-            font-weight: 600;
-            text-align: right;
-        }
-        
-        .value-highlight {
-            color: var(--color-vino);
-            font-size: 18px;
-        }
-        
-        /* Acciones del Producto */
-        .product-actions {
+        .announcement-form {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
         }
         
-        .action-btn {
-            padding: 12px;
+        .form-control {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-control label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control select, 
+        .form-control input, 
+        .form-control textarea {
+            padding: 0.7rem;
+            border: 1px solid var(--gris);
+            border-radius: 4px;
+        }
+        
+        .form-control textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-control select:focus, 
+        .form-control input:focus, 
+        .form-control textarea:focus {
+            outline: none;
+            border-color: var(--azul-secundario);
+        }
+        
+        .btn-submit-announcement {
+            grid-column: 1 / -1;
+            background-color: var(--azul-principal);
+            color: white;
             border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
+            padding: 0.8rem;
+            border-radius: 4px;
             cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-submit-announcement:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* Sección de anuncios */
+        .announcements-section {
+            background-color: var(--blanco);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--sombra);
+        }
+        
+        .category-filter {
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
+            gap: 1rem;
         }
         
-        .action-btn:active {
-            transform: scale(0.95);
+        .category-filter label {
+            font-weight: 500;
         }
         
-        /* Historial */
-        .history-section {
+        .category-filter select {
+            padding: 0.5rem;
+            border: 1px solid var(--gris);
+            border-radius: 4px;
+            min-width: 200px;
+        }
+        
+        .announcements-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .announcement-card {
+            background-color: var(--azul-claro);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--azul-principal);
+        }
+        
+        .announcement-card h3 {
+            color: var(--azul-principal);
+            margin-bottom: 0.5rem;
+        }
+        
+        .announcement-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--gris-oscuro);
+        }
+        
+        .announcement-category {
+            background-color: var(--azul-secundario);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .announcement-description {
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+        
+        /* Panel de administrador */
+        .admin-panel {
             display: none;
         }
         
-        .history-list {
-            margin-top: 20px;
+        .admin-panel.active {
+            display: block;
         }
         
-        .history-item {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            border-left: 4px solid var(--color-vino);
+        .admin-announcements {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
         
-        .history-info {
-            flex: 1;
-        }
-        
-        .history-time {
-            font-size: 12px;
-            color: var(--color-gris);
-            margin-bottom: 5px;
-        }
-        
-        .history-name {
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-        
-        .history-code {
-            font-size: 12px;
-            color: var(--color-gris);
-        }
-        
-        .history-action {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--color-gris-claro);
-            border: none;
-            color: var(--color-vino);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        /* Configuración */
-        .settings-section {
-            display: none;
-        }
-        
-        .settings-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-        
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--color-gris-claro);
-        }
-        
-        .setting-label {
-            font-weight: 600;
-        }
-        
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--color-vino);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-        
-        /* Estados de carga y error */
-        .loading {
+        /* Mensajes */
+        .message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
             text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--color-gris-claro);
-            border-top: 4px solid var(--color-vino);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        /* Modales */
-        .modal {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
         
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
+        .message.success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            display: block;
         }
         
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        .message.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: block;
         }
         
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-vino);
-        }
-        
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--color-gris);
-            cursor: pointer;
+        .empty-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            color: var(--gris);
         }
         
         /* Responsive */
-        @media (max-width: 360px) {
-            .app-container {
-                padding: 15px;
-                padding-top: 60px;
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
             }
             
-            .scanner-frame {
-                height: 250px;
+            .login-container {
+                position: static;
             }
             
-            .scanner-overlay {
-                width: 180px;
-                height: 180px;
+            .login-form {
+                position: static;
+                width: 100%;
+                margin-top: 1rem;
             }
             
-            .btn {
-                padding: 14px;
-                font-size: 14px;
+            .announcement-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .announcements-container, .admin-announcements {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header Fijo -->
-    <div class="app-header">
-        <div class="logo-container">
-            <div class="logo-icon">C09</div>
-            <div>
-                <div class="app-title">INVENTARIO COBATAB</div>
-                <div class="app-subtitle">Escáner Local</div>
-            </div>
+    <!-- Encabezado con login -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">⛪</div>
+            <h1>Gestor de Anuncios - Iglesia</h1>
         </div>
-        <div class="header-actions">
-            <button class="icon-btn" id="syncBtn" title="Sincronizar datos">
-                <i>🔄</i>
-            </button>
-            <button class="icon-btn" id="infoBtn" title="Información">
-                <i>ℹ️</i>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Contenedor Principal -->
-    <div class="app-container">
-        <!-- Pestañas de Navegación -->
-        <div class="tabs-container">
-            <button class="tab active" data-tab="scanner">📷 Escanear</button>
-            <button class="tab" data-tab="results">📋 Resultados</button>
-            <button class="tab" data-tab="history">🕐 Historial</button>
-            <button class="tab" data-tab="settings">⚙️ Ajustes</button>
-        </div>
-        
-        <!-- Sección: ESCANER -->
-        <div id="scanner" class="scanner-section">
-            <div class="scanner-frame">
-                <video id="scanner-video" playsinline></video>
-                <div class="scanner-overlay"></div>
-                <div class="scanner-line"></div>
-            </div>
-            
-            <div class="scanner-controls">
-                <button id="startScan" class="btn btn-primary">
-                    <span>▶</span> INICIAR ESCANEO
-                </button>
-                <button id="stopScan" class="btn btn-secondary" style="display: none;">
-                    <span>⏹</span> DETENER
-                </button>
-            </div>
-            
-            <div class="manual-input">
-                <p style="text-align: center; margin: 15px 0; color: var(--color-gris);">
-                    O ingresa el código manualmente:
+        <div class="login-container">
+            <button id="loginBtn" class="login-btn">Iniciar Sesión Administrador</button>
+            <div id="loginForm" class="login-form">
+                <h3>Acceso Administrador</h3>
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" placeholder="Ingresa tu usuario">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña">
+                </div>
+                <button id="submitLogin" class="submit-btn">Ingresar</button>
+                <p style="margin-top: 0.7rem; font-size: 0.85rem; color: #666;">
+                    Credenciales: Usuario: <strong>Admin</strong>, Contraseña: <strong>Aa.1234#</strong>
                 </p>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="manualCode" 
-                           placeholder="Ej: PROD-001 o 123" 
-                           style="flex: 1; padding: 15px; border: 2px solid var(--color-gris-claro); border-radius: 10px; font-size: 16px;">
-                    <button id="searchBtn" class="btn btn-primary" style="width: auto; padding: 15px 20px;">
-                        🔍
-                    </button>
-                </div>
             </div>
+            <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
         </div>
-        
-        <!-- Sección: RESULTADOS -->
-        <div id="results" class="results-section">
-            <div id="productInfo"></div>
-        </div>
-        
-        <!-- Sección: HISTORIAL -->
-        <div id="history" class="history-section">
-            <div style="text-align: center; margin: 20px 0;">
-                <button id="clearHistory" class="btn btn-secondary">
-                    🗑️ Limpiar Historial
-                </button>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="container">
+        <!-- Formulario para crear anuncios -->
+        <section class="announcement-form-section">
+            <h2 class="section-title">Crear Nuevo Anuncio</h2>
+            <form id="announcementForm" class="announcement-form">
+                <div class="form-control">
+                    <label for="category">Categoría:</label>
+                    <select id="category" required>
+                        <option value="" disabled selected>Selecciona una categoría</option>
+                        <option value="Ministerio Juvenil">Ministerio Juvenil</option>
+                        <option value="Ministerio Personal">Ministerio Personal</option>
+                        <option value="Ministerio de la Mujer">Ministerio de la Mujer</option>
+                        <option value="Ancianos">Ancianos</option>
+                        <option value="Diáconos">Diáconos</option>
+                        <option value="Escuela Sabática">Escuela Sabática</option>
+                        <option value="Evangelismo">Evangelismo</option>
+                        <option value="Música y Alabanza">Música y Alabanza</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label for="time">Hora del evento:</label>
+                    <input type="time" id="time" required>
+                </div>
+                <div class="form-control">
+                    <label for="title">Título del anuncio:</label>
+                    <input type="text" id="title" placeholder="Ej: Reunión de oración" required>
+                </div>
+                <div class="form-control full-width">
+                    <label for="description">Descripción:</label>
+                    <textarea id="description" placeholder="Describe los detalles del anuncio..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit-announcement">Publicar Anuncio</button>
+            </form>
+            <div id="formMessage" class="message"></div>
+        </section>
+
+        <!-- Sección para mostrar anuncios (vista normal) -->
+        <section class="announcements-section">
+            <h2 class="section-title">Anuncios Publicados</h2>
+            <div class="category-filter">
+                <label for="filterCategory">Filtrar por categoría:</label>
+                <select id="filterCategory">
+                    <option value="all">Todas las categorías</option>
+                    <option value="Ministerio Juvenil">Ministerio Juvenil</option>
+                    <option value="Ministerio Personal">Ministerio Personal</option>
+                    <option value="Ministerio de la Mujer">Ministerio de la Mujer</option>
+                    <option value="Ancianos">Ancianos</option>
+                    <option value="Diáconos">Diáconos</option>
+                    <option value="Escuela Sabática">Escuela Sabática</option>
+                    <option value="Evangelismo">Evangelismo</option>
+                    <option value="Música y Alabanza">Música y Alabanza</option>
+                </select>
             </div>
-            <div class="history-list" id="historyList"></div>
-        </div>
-        
-        <!-- Sección: AJUSTES -->
-        <div id="settings" class="settings-section">
-            <div class="settings-card">
-                <h3 style="color: var(--color-vino); margin-bottom: 20px;">Configuración</h3>
-                
-                <div class="setting-item">
-                    <span class="setting-label">Sonido al escanear</span>
-                    <label class="switch">
-                        <input type="checkbox" id="soundToggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <span class="setting-label">Vibración al éxito</span>
-                    <label class="switch">
-                        <input type="checkbox" id="vibrationToggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <div class="setting-item">
-                    <span class="setting-label">Guardar automáticamente</span>
-                    <label class="switch">
-                        <input type="checkbox" id="autoSaveToggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-card">
-                <h3 style="color: var(--color-vino); margin-bottom: 20px;">Base de Datos</h3>
-                
-                <div style="margin: 15px 0;">
-                    <p style="margin-bottom: 10px;">Productos cargados: <span id="productCount">0</span></p>
-                    <div style="background: var(--color-gris-claro); height: 10px; border-radius: 5px; overflow: hidden;">
-                        <div id="dbUsage" style="background: var(--color-vino); height: 100%; width: 0%;"></div>
-                    </div>
-                </div>
-                
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                    <button id="loadData" class="btn btn-primary">
-                        📥 Cargar desde Excel/CSV
-                    </button>
-                    <button id="exportData" class="btn btn-success">
-                        📤 Exportar a Excel
-                    </button>
-                    <button id="clearData" class="btn btn-secondary">
-                        🗑️ Limpiar Base de Datos
-                    </button>
+            <div id="announcementsContainer" class="announcements-container">
+                <!-- Los anuncios se cargarán aquí dinámicamente -->
+                <div class="empty-message" id="emptyMessage">
+                    No hay anuncios para mostrar. ¡Crea el primer anuncio!
                 </div>
             </div>
-            
-            <div class="settings-card">
-                <h3 style="color: var(--color-vino); margin-bottom: 20px;">Información</h3>
-                <p style="margin-bottom: 10px;"><strong>Versión:</strong> 1.0.0</p>
-                <p style="margin-bottom: 10px;"><strong>Modo:</strong> <span id="appMode">Local</span></p>
-                <p><strong>Última sincronización:</strong> <span id="lastSync">Nunca</span></p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal: Detalles del Producto -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Detalles Completos</h2>
-                <button class="close-modal" onclick="closeModal('productModal')">×</button>
-            </div>
-            <div id="modalProductContent"></div>
-        </div>
-    </div>
-    
-    <!-- Modal: Compartir -->
-    <div id="shareModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Compartir Producto</h2>
-                <button class="close-modal" onclick="closeModal('shareModal')">×</button>
-            </div>
-            <div style="margin: 20px 0;">
-                <p>Selecciona cómo quieres compartir la información:</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0;">
-                    <button class="action-btn" style="background: #25D366; color: white;" onclick="shareViaWhatsApp()">
-                        <span>📱</span> WhatsApp
-                    </button>
-                    <button class="action-btn" style="background: #0088cc; color: white;" onclick="shareViaTelegram()">
-                        <span>✈️</span> Telegram
-                    </button>
-                    <button class="action-btn" style="background: #333; color: white;" onclick="saveAsPDF()">
-                        <span>📄</span> Guardar PDF
-                    </button>
-                    <button class="action-btn" style="background: #34A853; color: white;" onclick="saveAsImage()">
-                        <span>🖼️</span> Guardar Imagen
-                    </button>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <p style="margin-bottom: 10px; font-weight: 600;">Texto para compartir:</p>
-                    <textarea id="shareText" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
-                    <button onclick="copyToClipboard()" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-                        📋 Copiar Texto
-                    </button>
+        </section>
+
+        <!-- Panel de administrador (solo visible al iniciar sesión) -->
+        <section id="adminPanel" class="announcements-section admin-panel">
+            <h2 class="section-title">Panel de Administrador - Todos los Anuncios</h2>
+            <div id="adminAnnouncements" class="admin-announcements">
+                <!-- Los anuncios del panel de administrador se cargarán aquí -->
+                <div class="empty-message" id="adminEmptyMessage">
+                    No hay anuncios para mostrar.
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Scripts -->
+        </section>
+    </main>
+
     <script>
-        // ============================================
-        // VARIABLES GLOBALES Y CONFIGURACIÓN
-        // ============================================
-        const APP_NAME = "InventarioCOBATAB";
-        const DB_VERSION = 2;
-        let db = null;
-        let currentProduct = null;
-        let scannerActive = false;
-        let videoStream = null;
-        
-        // ============================================
-        // INICIALIZACIÓN DE LA APLICACIÓN
-        // ============================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Inicializar base de datos IndexedDB
-            await initDatabase();
-            
-            // Cargar configuración
-            loadSettings();
-            
-            // Configurar eventos
-            setupEventListeners();
-            
-            // Actualizar contadores
-            updateProductCount();
-            
-            // Mostrar historial
-            loadHistory();
-            
-            // Configurar navegación por pestañas
-            setupTabs();
-            
-            // NO cargar datos de ejemplo automáticamente
-            // La base de datos comenzará vacía
-        });
-        
-        // ============================================
-        // BASE DE DATOS INDEXEDDB (LOCAL)
-        // ============================================
-        async function initDatabase() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(APP_NAME, DB_VERSION);
-                
-                request.onerror = (event) => {
-                    console.error("Error al abrir la base de datos:", event.target.error);
-                    showError("Error al inicializar la base de datos local");
-                    reject(event.target.error);
-                };
-                
-                request.onsuccess = (event) => {
-                    db = event.target.result;
-                    console.log("Base de datos inicializada");
-                    resolve();
-                };
-                
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    
-                    // Crear almacén para productos
-                    if (!db.objectStoreNames.contains('products')) {
-                        const productStore = db.createObjectStore('products', { keyPath: 'id' });
-                        productStore.createIndex('codigo', 'codigo', { unique: true });
-                        productStore.createIndex('categoria', 'categoria', { unique: false });
-                    }
-                    
-                    // Crear almacén para historial
-                    if (!db.objectStoreNames.contains('scanHistory')) {
-                        const historyStore = db.createObjectStore('scanHistory', { keyPath: 'id', autoIncrement: true });
-                        historyStore.createIndex('timestamp', 'timestamp', { unique: false });
-                    }
-                    
-                    // Crear almacén para configuración
-                    if (!db.objectStoreNames.contains('settings')) {
-                        const settingsStore = db.createObjectStore('settings', { keyPath: 'key' });
-                    }
-                    
-                    console.log("Estructura de base de datos creada");
-                };
-            });
-        }
-        
-        // ============================================
-        // FUNCIONES DE LA BASE DE DATOS
-        // ============================================
-        async function saveProduct(product) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['products'], 'readwrite');
-                const store = transaction.objectStore('products');
-                
-                // Asegurarse de que el ID sea numérico
-                product.id = parseInt(product.id);
-                
-                const request = store.put(product);
-                
-                request.onsuccess = () => resolve();
-                request.onerror = (event) => reject(event.target.error);
-            });
-        }
-        
-        async function getProductById(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['products'], 'readonly');
-                const store = transaction.objectStore('products');
-                
-                // Intentar buscar por ID numérico primero
-                let request = store.get(parseInt(id));
-                
-                request.onsuccess = () => {
-                    if (request.result) {
-                        resolve(request.result);
-                    } else {
-                        // Si no se encuentra por ID, buscar por código
-                        const index = store.index('codigo');
-                        request = index.get(id.toString());
-                        
-                        request.onsuccess = () => {
-                            if (request.result) {
-                                resolve(request.result);
-                            } else {
-                                reject(new Error("Producto no encontrado"));
-                            }
-                        };
-                        
-                        request.onerror = () => reject(request.error);
-                    }
-                };
-                
-                request.onerror = () => reject(request.error);
-            });
-        }
-        
-        async function getAllProducts() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['products'], 'readonly');
-                const store = transaction.objectStore('products');
-                const request = store.getAll();
-                
-                request.onsuccess = () => resolve(request.result || []);
-                request.onerror = () => reject(request.error);
-            });
-        }
-        
-        async function addToHistory(product) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['scanHistory'], 'readwrite');
-                const store = transaction.objectStore('scanHistory');
-                
-                const historyItem = {
-                    productId: product.id,
-                    codigo: product.codigo,
-                    nombre: product.nombre,
-                    timestamp: new Date().toISOString(),
-                    fecha: new Date().toLocaleString()
-                };
-                
-                const request = store.add(historyItem);
-                
-                request.onsuccess = () => resolve();
-                request.onerror = (event) => reject(event.target.error);
-            });
-        }
-        
-        async function getHistory() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['scanHistory'], 'readonly');
-                const store = transaction.objectStore('scanHistory');
-                const index = store.index('timestamp');
-                const request = index.getAll();
-                
-                request.onsuccess = () => {
-                    const history = request.result || [];
-                    // Ordenar por timestamp descendente
-                    history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    resolve(history);
-                };
-                request.onerror = () => reject(request.error);
-            });
-        }
-        
-        async function clearHistory() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['scanHistory'], 'readwrite');
-                const store = transaction.objectStore('scanHistory');
-                const request = store.clear();
-                
-                request.onsuccess = () => resolve();
-                request.onerror = (event) => reject(event.target.error);
-            });
-        }
-        
-        // ============================================
-        // ESCANER DE CÓDIGOS QR
-        // ============================================
-        async function startScanner() {
-            try {
-                // Solicitar acceso a la cámara
-                videoStream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-                
-                const videoElement = document.getElementById('scanner-video');
-                videoElement.srcObject = videoStream;
-                videoElement.play();
-                
-                // Cambiar estado de los botones
-                document.getElementById('startScan').style.display = 'none';
-                document.getElementById('stopScan').style.display = 'block';
-                scannerActive = true;
-                
-                // Configurar detección de códigos de barras/QR nativa
-                setupBarcodeDetection(videoElement);
-                
-                // Reproducir sonido si está activado
-                if (getSetting('soundToggle', true)) {
-                    playBeepSound();
-                }
-                
-            } catch (error) {
-                console.error("Error al acceder a la cámara:", error);
-                showError("No se pudo acceder a la cámara. Asegúrate de dar permisos.");
+        // Datos de ejemplo para inicializar la aplicación
+        const initialAnnouncements = [
+            {
+                id: 1,
+                category: "Ministerio Juvenil",
+                time: "18:00",
+                title: "Retiro Espiritual Juvenil",
+                description: "Retiro juvenil en la montaña este fin de semana. Traer ropa abrigadora y Biblia.",
+                date: "2023-10-15"
+            },
+            {
+                id: 2,
+                category: "Escuela Sabática",
+                time: "09:30",
+                title: "Estudio de la Lección 5",
+                description: "Estudio de la lección de esta semana en el salón principal. Todos invitados.",
+                date: "2023-10-20"
+            },
+            {
+                id: 3,
+                category: "Ministerio de la Mujer",
+                time: "15:00",
+                title: "Reunión de Oración",
+                description: "Reunión de oración especial por las familias de la congregación.",
+                date: "2023-10-18"
             }
-        }
-        
-        function stopScanner() {
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-                videoStream = null;
-            }
+        ];
+
+        // Credenciales de administrador
+        const ADMIN_CREDENTIALS = {
+            username: "Admin",
+            password: "Aa.1234#"
+        };
+
+        // Estado de la aplicación
+        let announcements = [];
+        let isAdminLoggedIn = false;
+        let nextId = 4;
+
+        // Elementos del DOM
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginForm = document.getElementById('loginForm');
+        const submitLogin = document.getElementById('submitLogin');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const announcementForm = document.getElementById('announcementForm');
+        const announcementsContainer = document.getElementById('announcementsContainer');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminAnnouncements = document.getElementById('adminAnnouncements');
+        const filterCategory = document.getElementById('filterCategory');
+        const formMessage = document.getElementById('formMessage');
+        const emptyMessage = document.getElementById('emptyMessage');
+        const adminEmptyMessage = document.getElementById('adminEmptyMessage');
+
+        // Inicializar la aplicación
+        function initApp() {
+            // Cargar anuncios desde localStorage o usar datos iniciales
+            const savedAnnouncements = localStorage.getItem('churchAnnouncements');
             
-            const videoElement = document.getElementById('scanner-video');
-            videoElement.srcObject = null;
-            
-            document.getElementById('startScan').style.display = 'block';
-            document.getElementById('stopScan').style.display = 'none';
-            scannerActive = false;
-        }
-        
-        function setupBarcodeDetection(videoElement) {
-            // Usar la API de BarcodeDetector si está disponible (Chrome Android)
-            if ('BarcodeDetector' in window) {
-                const barcodeDetector = new BarcodeDetector({ 
-                    formats: ['qr_code', 'code_128', 'code_39', 'ean_13'] 
-                });
-                
-                function detectFrame() {
-                    if (!scannerActive) return;
-                    
-                    barcodeDetector.detect(videoElement)
-                        .then(barcodes => {
-                            if (barcodes.length > 0) {
-                                const code = barcodes[0].rawValue;
-                                processScannedCode(code);
-                                stopScanner();
-                            }
-                            if (scannerActive) {
-                                requestAnimationFrame(detectFrame);
-                            }
-                        })
-                        .catch(err => {
-                            console.error("Error en detección:", err);
-                            if (scannerActive) {
-                                setTimeout(detectFrame, 100);
-                            }
-                        });
+            if (savedAnnouncements) {
+                announcements = JSON.parse(savedAnnouncements);
+                // Encontrar el ID más alto para continuar la numeración
+                if (announcements.length > 0) {
+                    nextId = Math.max(...announcements.map(ann => ann.id)) + 1;
                 }
-                
-                detectFrame();
-                
             } else {
-                // Alternativa para navegadores sin soporte nativo
-                showError("Tu navegador no soporta escaneo nativo. Usa Chrome en Android.");
-            }
-        }
-        
-        // ============================================
-        // PROCESAMIENTO DE CÓDIGOS ESCANEADOS
-        // ============================================
-        async function processScannedCode(code) {
-            console.log("Código escaneado:", code);
-            
-            // Extraer ID del producto
-            let productId = extractProductId(code);
-            if (!productId) productId = code;
-            
-            // Buscar producto
-            try {
-                const product = await getProductById(productId);
-                await showProductInfo(product);
-                
-                // Agregar al historial
-                await addToHistory(product);
-                loadHistory();
-                
-                // Cambiar a pestaña de resultados
-                switchTab('results');
-                
-                // Efectos de éxito
-                if (getSetting('soundToggle', true)) {
-                    playSuccessSound();
-                }
-                if (getSetting('vibrationToggle', true) && navigator.vibrate) {
-                    navigator.vibrate(200);
-                }
-                
-            } catch (error) {
-                console.error("Error buscando producto:", error);
-                showError(`Producto no encontrado: ${code}`);
-            }
-        }
-        
-        function extractProductId(code) {
-            // Intentar extraer de una URL
-            try {
-                if (code.includes('detalles_item.php')) {
-                    const match = code.match(/id=(\d+)/);
-                    if (match) return match[1];
-                }
-                
-                // Intentar extraer de cualquier URL
-                const url = new URL(code);
-                const params = new URLSearchParams(url.search);
-                return params.get('id');
-                
-            } catch (e) {
-                // No es una URL, devolver el código tal cual
-                return code;
-            }
-        }
-        
-        // ============================================
-        // MOSTRAR INFORMACIÓN DEL PRODUCTO
-        // ============================================
-        async function showProductInfo(product) {
-            currentProduct = product;
-            
-            // Determinar clase del badge según estado
-            let statusClass = 'status-available';
-            let statusText = 'Disponible';
-            
-            switch(product.estado?.toLowerCase()) {
-                case 'en_uso':
-                    statusClass = 'status-inuse';
-                    statusText = 'En uso';
-                    break;
-                case 'mantenimiento':
-                    statusClass = 'status-maintenance';
-                    statusText = 'Mantenimiento';
-                    break;
-                case 'baja':
-                    statusClass = 'status-low';
-                    statusText = 'Baja';
-                    break;
+                announcements = initialAnnouncements;
+                saveAnnouncements();
             }
             
-            // Formatear fecha
-            let fechaAdq = 'No especificada';
-            if (product.fecha_adquisicion || product.fecha_creacion) {
-                const fecha = product.fecha_adquisicion || product.fecha_creacion;
-                fechaAdq = new Date(fecha).toLocaleDateString('es-MX');
+            // Verificar si hay sesión de administrador activa
+            const adminSession = localStorage.getItem('adminSession');
+            if (adminSession === 'active') {
+                isAdminLoggedIn = true;
+                updateLoginUI();
             }
             
-            // Crear HTML del producto
-            const html = `
-                <div class="product-card">
-                    <div class="product-header">
-                        <div>
-                            <div class="product-name">${product.nombre || 'Sin nombre'}</div>
-                            <div class="product-code">${product.codigo || 'Sin código'}</div>
-                        </div>
-                        <div class="status-badge ${statusClass}">${statusText}</div>
-                    </div>
-                    
-                    <div class="product-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Categoría:</span>
-                            <span class="detail-value">${product.categoria || 'Sin categoría'}</span>
-                        </div>
-                        
-                        <div class="detail-row">
-                            <span class="detail-label">Cantidad:</span>
-                            <span class="detail-value">
-                                ${product.cantidad || 0} ${product.unidad_medida || 'unidades'}
-                            </span>
-                        </div>
-                        
-                        <div class="detail-row">
-                            <span class="detail-label">Valor unitario:</span>
-                            <span class="detail-value">
-                                $${parseFloat(product.valor || 0).toFixed(2)}
-                            </span>
-                        </div>
-                        
-                        <div class="detail-row">
-                            <span class="detail-label">Valor total:</span>
-                            <span class="detail-value value-highlight">
-                                $${parseFloat((product.valor || 0) * (product.cantidad || 1)).toFixed(2)}
-                            </span>
-                        </div>
-                        
-                        <div class="detail-row">
-                            <span class="detail-label">Ubicación:</span>
-                            <span class="detail-value">${product.ubicacion || 'No especificada'}</span>
-                        </div>
-                        
-                        <div class="detail-row">
-                            <span class="detail-label">Fecha adquisición:</span>
-                            <span class="detail-value">${fechaAdq}</span>
-                        </div>
-                        
-                        <div class="detail-row">
-                            <span class="detail-label">Responsable:</span>
-                            <span class="detail-value">${product.responsable || 'No asignado'}</span>
-                        </div>
-                    </div>
-                    
-                    ${product.descripcion ? `
-                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
-                            <p style="color: #666; font-size: 14px;"><strong>Descripción:</strong> ${product.descripcion}</p>
-                        </div>
-                    ` : ''}
-                    
-                    <div class="product-actions">
-                        <button class="action-btn" style="background: var(--color-azul); color: white;" onclick="showProductDetails()">
-                            <span>📖</span> Más detalles
-                        </button>
-                        <button class="action-btn" style="background: var(--color-verde); color: white;" onclick="openShareModal()">
-                            <span>📤</span> Compartir
-                        </button>
-                        <button class="action-btn" style="background: #6f42c1; color: white;" onclick="saveProductCard()">
-                            <span>💾</span> Guardar
-                        </button>
-                        <button class="action-btn" style="background: #fd7e14; color: white;" onclick="printProductCard()">
-                            <span>🖨️</span> Imprimir
-                        </button>
-                    </div>
-                </div>
-            `;
+            // Renderizar anuncios iniciales
+            renderAnnouncements();
             
-            document.getElementById('productInfo').innerHTML = html;
+            // Configurar event listeners
+            setupEventListeners();
         }
-        
-        // ============================================
-        // FUNCIONES DE COMPARTIR Y DESCARGAR
-        // ============================================
-        function openShareModal() {
-            if (!currentProduct) return;
-            
-            // Generar texto para compartir
-            const shareText = generateShareText();
-            document.getElementById('shareText').value = shareText;
-            
-            // Mostrar modal
-            openModal('shareModal');
-        }
-        
-        function generateShareText() {
-            const product = currentProduct;
-            const totalValue = (product.valor || 0) * (product.cantidad || 1);
-            
-            return `📦 *INVENTARIO COBATAB - PRODUCTO ENCONTRADO*
 
-*Producto:* ${product.nombre || 'Sin nombre'}
-*Código:* ${product.codigo || 'Sin código'}
-*Categoría:* ${product.categoria || 'Sin categoría'}
-*Estado:* ${product.estado || 'No especificado'}
-*Cantidad:* ${product.cantidad || 0} ${product.unidad_medida || 'unidades'}
-*Valor unitario:* $${parseFloat(product.valor || 0).toFixed(2)}
-*Valor total:* $${parseFloat(totalValue).toFixed(2)}
-*Ubicación:* ${product.ubicacion || 'No especificada'}
-*Responsable:* ${product.responsable || 'No asignado'}
-*Fecha:* ${new Date().toLocaleDateString('es-MX')}
-
-_Escaneado con la app de inventario COBATAB_`;
-        }
-        
-        function shareViaWhatsApp() {
-            const text = encodeURIComponent(generateShareText());
-            const url = `https://wa.me/?text=${text}`;
-            window.open(url, '_blank');
-        }
-        
-        function shareViaTelegram() {
-            const text = encodeURIComponent(generateShareText());
-            const url = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${text}`;
-            window.open(url, '_blank');
-        }
-        
-        async function saveAsPDF() {
-            // Crear un HTML para el PDF
-            const product = currentProduct;
-            const totalValue = (product.valor || 0) * (product.cantidad || 1);
-            
-            const htmlContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        .header { text-align: center; margin-bottom: 30px; }
-                        .title { color: #8B0000; font-size: 24px; }
-                        .subtitle { color: #666; }
-                        .product-info { margin: 20px 0; }
-                        .info-row { margin: 10px 0; }
-                        .label { font-weight: bold; color: #333; }
-                        .value { margin-left: 10px; }
-                        .footer { margin-top: 40px; text-align: center; color: #666; font-size: 12px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1 class="title">COBATAB Plantel 09</h1>
-                        <p class="subtitle">Ficha Técnica de Producto</p>
-                        <p>Fecha: ${new Date().toLocaleDateString('es-MX')}</p>
-                    </div>
-                    
-                    <div class="product-info">
-                        <h2>${product.nombre}</h2>
-                        <div class="info-row"><span class="label">Código:</span> <span class="value">${product.codigo}</span></div>
-                        <div class="info-row"><span class="label">Categoría:</span> <span class="value">${product.categoria}</span></div>
-                        <div class="info-row"><span class="label">Estado:</span> <span class="value">${product.estado}</span></div>
-                        <div class="info-row"><span class="label">Cantidad:</span> <span class="value">${product.cantidad} ${product.unidad_medida}</span></div>
-                        <div class="info-row"><span class="label">Valor unitario:</span> <span class="value">$${parseFloat(product.valor).toFixed(2)}</span></div>
-                        <div class="info-row"><span class="label">Valor total:</span> <span class="value">$${parseFloat(totalValue).toFixed(2)}</span></div>
-                        <div class="info-row"><span class="label">Ubicación:</span> <span class="value">${product.ubicacion}</span></div>
-                        <div class="info-row"><span class="label">Responsable:</span> <span class="value">${product.responsable}</span></div>
-                        <div class="info-row"><span class="label">Descripción:</span> <span class="value">${product.descripcion || 'Sin descripción'}</span></div>
-                    </div>
-                    
-                    <div class="footer">
-                        <p>Documento generado por la App de Inventario COBATAB</p>
-                        <p>${window.location.href}</p>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            // Para una implementación real de PDF, necesitarías una librería como jsPDF
-            // Esta es una versión simplificada
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `producto_${product.codigo}_${new Date().getTime()}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showMessage('✅ Documento listo para guardar', 'success');
-        }
-        
-        async function saveAsImage() {
-            const productCard = document.querySelector('.product-card');
-            if (!productCard) return;
-            
-            try {
-                // Usar html2canvas para capturar la tarjeta como imagen
-                if (typeof html2canvas !== 'undefined') {
-                    const canvas = await html2canvas(productCard);
-                    const image = canvas.toDataURL('image/png');
-                    
-                    const a = document.createElement('a');
-                    a.href = image;
-                    a.download = `producto_${currentProduct.codigo}_${new Date().getTime()}.png`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    
-                    showMessage('✅ Imagen guardada', 'success');
-                } else {
-                    // Si no hay html2canvas, usar alternativa simple
-                    showMessage('ℹ️ Para guardar como imagen, agrega la librería html2canvas', 'info');
-                }
-            } catch (error) {
-                console.error("Error al guardar imagen:", error);
-                showError("Error al guardar la imagen");
-            }
-        }
-        
-        function copyToClipboard() {
-            const textarea = document.getElementById('shareText');
-            textarea.select();
-            textarea.setSelectionRange(0, 99999); // Para móviles
-            
-            try {
-                navigator.clipboard.writeText(textarea.value)
-                    .then(() => showMessage('✅ Texto copiado al portapapeles', 'success'))
-                    .catch(() => {
-                        // Fallback para navegadores antiguos
-                        document.execCommand('copy');
-                        showMessage('✅ Texto copiado', 'success');
-                    });
-            } catch (error) {
-                showError("Error al copiar texto");
-            }
-        }
-        
-        // ============================================
-        // CARGA DE DATOS DESDE ARCHIVOS
-        // ============================================
-        async function loadDataFromFile() {
-            try {
-                // Crear input de archivo invisible
-                const fileInput = document.createElement('input');
-                fileInput.type = 'file';
-                fileInput.accept = '.csv,.txt,.xlsx,.xls,.xlsm';
-                fileInput.style.display = 'none';
-                
-                fileInput.onchange = async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) {
-                        document.body.removeChild(fileInput);
-                        return;
-                    }
-                    
-                    // Validar tipo de archivo
-                    const validExtensions = ['.csv', '.txt', '.xlsx', '.xls', '.xlsm'];
-                    const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-                    
-                    if (!validExtensions.includes(fileExt)) {
-                        showError('Tipo de archivo no válido. Use CSV (.csv) o Excel (.xlsx, .xls)');
-                        document.body.removeChild(fileInput);
-                        return;
-                    }
-                    
-                    // Mostrar mensaje de carga
-                    showMessage(`📁 Procesando ${file.name}...`, 'info');
-                    
-                    // Leer archivo
-                    const reader = new FileReader();
-                    
-                    reader.onload = async (event) => {
-                        try {
-                            const content = event.target.result;
-                            let products = [];
-                            
-                            if (fileExt === '.csv' || fileExt === '.txt') {
-                                products = parseCSVData(content);
-                            } else if (fileExt === '.xlsx' || fileExt === '.xls' || fileExt === '.xlsm') {
-                                // Para Excel, mostrar mensaje sobre formato
-                                showMessage('ℹ️ Para archivos Excel complejos, convierte primero a CSV', 'info');
-                                // Intentar leer como CSV si es posible
-                                products = parseCSVData(content.toString());
-                            }
-                            
-                            // Guardar productos
-                            let savedCount = 0;
-                            let errorCount = 0;
-                            
-                            for (const product of products) {
-                                try {
-                                    // Asignar ID único si no existe
-                                    if (!product.id) {
-                                        product.id = Date.now() + Math.floor(Math.random() * 1000);
-                                    }
-                                    
-                                    await saveProduct(product);
-                                    savedCount++;
-                                } catch (error) {
-                                    console.warn("Error guardando producto:", product, error);
-                                    errorCount++;
-                                }
-                            }
-                            
-                            // Actualizar interfaz
-                            updateProductCount();
-                            
-                            // Mostrar resultado
-                            if (errorCount > 0) {
-                                showMessage(`✅ ${savedCount} productos cargados, ${errorCount} errores`, savedCount > 0 ? 'success' : 'error');
-                            } else {
-                                showMessage(`✅ ${savedCount} productos cargados desde ${file.name}`, 'success');
-                            }
-                            
-                        } catch (error) {
-                            console.error("Error procesando archivo:", error);
-                            showError("Error al procesar el archivo. Verifique el formato.");
-                        }
-                    };
-                    
-                    reader.onerror = () => {
-                        showError("Error al leer el archivo");
-                        document.body.removeChild(fileInput);
-                    };
-                    
-                    // Leer según tipo de archivo
-                    if (fileExt === '.csv' || fileExt === '.txt') {
-                        reader.readAsText(file, 'UTF-8');
-                    } else {
-                        reader.readAsArrayBuffer(file);
-                    }
-                    
-                    document.body.removeChild(fileInput);
-                };
-                
-                fileInput.oncancel = () => {
-                    document.body.removeChild(fileInput);
-                };
-                
-                // Agregar al documento y disparar click
-                document.body.appendChild(fileInput);
-                fileInput.click();
-                
-            } catch (error) {
-                console.error("Error en carga de archivo:", error);
-                showError("Error al cargar archivo: " + error.message);
-            }
-        }
-        
-        function parseCSVData(csvText) {
-            const products = [];
-            const lines = csvText.split('\n');
-            
-            if (lines.length === 0) {
-                return products;
-            }
-            
-            // Buscar encabezados (primera línea no vacía)
-            let headers = [];
-            let startLine = 0;
-            
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i].trim()) {
-                    headers = lines[i].split(',').map(h => h.trim().toLowerCase());
-                    startLine = i + 1;
-                    break;
-                }
-            }
-            
-            // Si no hay encabezados, usar valores por defecto
-            if (headers.length === 0) {
-                headers = ['codigo', 'nombre', 'categoria', 'cantidad', 'valor', 'estado', 'ubicacion', 'responsable'];
-                startLine = 0;
-            }
-            
-            // Procesar cada línea
-            for (let i = startLine; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (!line || line.startsWith('#') || line.startsWith('//')) {
-                    continue;
-                }
-                
-                // Manejar celdas con comas dentro de comillas
-                const values = [];
-                let inQuotes = false;
-                let currentValue = '';
-                
-                for (let j = 0; j < line.length; j++) {
-                    const char = line[j];
-                    
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        values.push(currentValue.replace(/^"|"$/g, '').trim());
-                        currentValue = '';
-                    } else {
-                        currentValue += char;
-                    }
-                }
-                values.push(currentValue.replace(/^"|"$/g, '').trim());
-                
-                // Crear objeto producto si hay datos suficientes
-                if (values.length >= 2 && (values[0] || values[1])) {
-                    const product = {
-                        id: Date.now() + i + Math.floor(Math.random() * 1000),
-                        codigo: getCSVValue(values, headers, 'codigo') || `AUTO-${i}`,
-                        nombre: getCSVValue(values, headers, 'nombre') || 'Producto sin nombre',
-                        categoria: getCSVValue(values, headers, 'categoria') || 'General',
-                        cantidad: parseInt(getCSVValue(values, headers, 'cantidad')) || 1,
-                        unidad_medida: getCSVValue(values, headers, 'unidad_medida') || 'unidades',
-                        valor: parseFloat(getCSVValue(values, headers, 'valor')) || 0,
-                        estado: getCSVValue(values, headers, 'estado') || 'disponible',
-                        ubicacion: getCSVValue(values, headers, 'ubicacion') || 'Almacén',
-                        responsable: getCSVValue(values, headers, 'responsable') || 'No asignado',
-                        descripcion: getCSVValue(values, headers, 'descripcion') || '',
-                        fecha_adquisicion: getCSVValue(values, headers, 'fecha_adquisicion') || new Date().toISOString().split('T')[0],
-                        proveedor: getCSVValue(values, headers, 'proveedor') || ''
-                    };
-                    
-                    products.push(product);
-                }
-            }
-            
-            return products;
-        }
-        
-        function getCSVValue(values, headers, headerName) {
-            const index = headers.indexOf(headerName.toLowerCase());
-            return index >= 0 && index < values.length ? values[index] : '';
-        }
-        
-        // ============================================
-        // FUNCIONES AUXILIARES
-        // ============================================
+        // Configurar event listeners
         function setupEventListeners() {
-            // Escáner
-            document.getElementById('startScan').addEventListener('click', startScanner);
-            document.getElementById('stopScan').addEventListener('click', stopScanner);
-            document.getElementById('searchBtn').addEventListener('click', () => {
-                const code = document.getElementById('manualCode').value.trim();
-                if (code) {
-                    processScannedCode(code);
-                    document.getElementById('manualCode').value = '';
+            // Toggle formulario de login
+            loginBtn.addEventListener('click', () => {
+                loginForm.classList.toggle('active');
+            });
+            
+            // Cerrar formulario de login al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!loginForm.contains(e.target) && e.target !== loginBtn) {
+                    loginForm.classList.remove('active');
                 }
             });
             
-            document.getElementById('manualCode').addEventListener('keypress', (e) => {
+            // Enviar formulario de login
+            submitLogin.addEventListener('click', handleLogin);
+            
+            // También permitir login con Enter
+            passwordInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    const code = document.getElementById('manualCode').value.trim();
-                    if (code) {
-                        processScannedCode(code);
-                        document.getElementById('manualCode').value = '';
-                    }
+                    handleLogin();
                 }
             });
             
-            // Historial
-            document.getElementById('clearHistory').addEventListener('click', async () => {
-                if (confirm('¿Borrar todo el historial de escaneos?')) {
-                    await clearHistory();
-                    loadHistory();
-                    showMessage('✅ Historial limpiado', 'success');
-                }
-            });
+            // Cerrar sesión
+            logoutBtn.addEventListener('click', handleLogout);
             
-            // Configuración
-            document.getElementById('soundToggle').addEventListener('change', saveSettings);
-            document.getElementById('vibrationToggle').addEventListener('change', saveSettings);
-            document.getElementById('autoSaveToggle').addEventListener('change', saveSettings);
+            // Enviar formulario de anuncio
+            announcementForm.addEventListener('submit', handleAnnouncementSubmit);
             
-            // Base de datos
-            document.getElementById('loadData').addEventListener('click', loadDataFromFile);
-            document.getElementById('exportData').addEventListener('click', exportToExcel);
-            document.getElementById('clearData').addEventListener('click', () => {
-                if (confirm('¿Borrar TODOS los productos de la base de datos?\n\nEsta acción no se puede deshacer.')) {
-                    clearAllProducts();
-                }
-            });
-            
-            // Botones del header
-            document.getElementById('syncBtn').addEventListener('click', syncWithServer);
-            document.getElementById('infoBtn').addEventListener('click', () => {
-                alert('App de Inventario COBATAB - Plantel 09\n\nVersión: 1.0.0\nModo: Local\n\nFuncionalidades:\n• Escaneo de códigos QR\n• Búsqueda manual\n• Base de datos local\n• Historial de escaneos\n• Exportación a CSV\n\nLa app funciona completamente sin internet.');
-            });
+            // Filtrar anuncios por categoría
+            filterCategory.addEventListener('change', renderAnnouncements);
         }
-        
-        function setupTabs() {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.getAttribute('data-tab');
-                    switchTab(tabId);
-                });
-            });
-        }
-        
-        function switchTab(tabId) {
-            // Ocultar todas las secciones
-            document.querySelectorAll('[class$="-section"]').forEach(section => {
-                section.style.display = 'none';
-            });
+
+        // Manejar login de administrador
+        function handleLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
             
-            // Mostrar la sección seleccionada
-            document.getElementById(tabId).style.display = 'block';
-            
-            // Actualizar pestañas activas
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.getAttribute('data-tab') === tabId) {
-                    tab.classList.add('active');
-                }
-            });
-            
-            // Detener escáner si está activo
-            if (scannerActive) {
-                stopScanner();
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                isAdminLoggedIn = true;
+                localStorage.setItem('adminSession', 'active');
+                updateLoginUI();
+                showMessage('Sesión de administrador iniciada correctamente.', 'success');
+                loginForm.classList.remove('active');
+                usernameInput.value = '';
+                passwordInput.value = '';
+            } else {
+                showMessage('Credenciales incorrectas. Intenta nuevamente.', 'error');
             }
         }
-        
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
+
+        // Manejar logout de administrador
+        function handleLogout() {
+            isAdminLoggedIn = false;
+            localStorage.removeItem('adminSession');
+            updateLoginUI();
+            showMessage('Sesión de administrador cerrada.', 'success');
         }
-        
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+
+        // Actualizar la UI según el estado de login
+        function updateLoginUI() {
+            if (isAdminLoggedIn) {
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                adminPanel.classList.add('active');
+                renderAdminAnnouncements();
+            } else {
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                adminPanel.classList.remove('active');
+            }
         }
-        
-        function showProductDetails() {
-            if (!currentProduct) return;
+
+        // Manejar envío de nuevo anuncio
+        function handleAnnouncementSubmit(e) {
+            e.preventDefault();
             
-            const modalContent = document.getElementById('modalProductContent');
-            modalContent.innerHTML = `
-                <h3>${currentProduct.nombre}</h3>
-                <p><strong>Código:</strong> ${currentProduct.codigo}</p>
-                <p><strong>Número de serie:</strong> ${currentProduct.numero_serie || 'N/A'}</p>
-                <p><strong>Categoría:</strong> ${currentProduct.categoria}</p>
-                <p><strong>Estado:</strong> ${currentProduct.estado}</p>
-                <p><strong>Cantidad:</strong> ${currentProduct.cantidad} ${currentProduct.unidad_medida}</p>
-                <p><strong>Valor unitario:</strong> $${parseFloat(currentProduct.valor).toFixed(2)}</p>
-                <p><strong>Valor total:</strong> $${parseFloat(currentProduct.valor * currentProduct.cantidad).toFixed(2)}</p>
-                <p><strong>Ubicación:</strong> ${currentProduct.ubicacion || 'No especificada'}</p>
-                <p><strong>Proveedor:</strong> ${currentProduct.proveedor || 'No especificado'}</p>
-                <p><strong>Fecha adquisición:</strong> ${new Date(currentProduct.fecha_adquisicion || currentProduct.fecha_creacion).toLocaleDateString('es-MX')}</p>
-                <p><strong>Responsable:</strong> ${currentProduct.responsable || 'No asignado'}</p>
-                ${currentProduct.descripcion ? `<p><strong>Descripción:</strong><br>${currentProduct.descripcion}</p>` : ''}
-                ${currentProduct.notas ? `<p><strong>Notas:</strong><br>${currentProduct.notas}</p>` : ''}
-            `;
+            // Obtener valores del formulario
+            const category = document.getElementById('category').value;
+            const time = document.getElementById('time').value;
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
             
-            openModal('productModal');
-        }
-        
-        // ============================================
-        // CONFIGURACIÓN Y PERSISTENCIA
-        // ============================================
-        function saveSettings() {
-            const settings = {
-                soundToggle: document.getElementById('soundToggle').checked,
-                vibrationToggle: document.getElementById('vibrationToggle').checked,
-                autoSaveToggle: document.getElementById('autoSaveToggle').checked
+            // Validar campos
+            if (!category || !time || !title || !description) {
+                showMessage('Por favor completa todos los campos.', 'error');
+                return;
+            }
+            
+            // Crear nuevo anuncio
+            const newAnnouncement = {
+                id: nextId++,
+                category,
+                time,
+                title,
+                description,
+                date: new Date().toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
             };
             
-            localStorage.setItem('appSettings', JSON.stringify(settings));
-        }
-        
-        function loadSettings() {
-            const saved = localStorage.getItem('appSettings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                document.getElementById('soundToggle').checked = settings.soundToggle !== false;
-                document.getElementById('vibrationToggle').checked = settings.vibrationToggle !== false;
-                document.getElementById('autoSaveToggle').checked = settings.autoSaveToggle !== false;
+            // Agregar al array de anuncios
+            announcements.push(newAnnouncement);
+            
+            // Guardar en localStorage
+            saveAnnouncements();
+            
+            // Limpiar formulario
+            announcementForm.reset();
+            
+            // Mostrar mensaje de éxito
+            showMessage('Anuncio publicado exitosamente.', 'success');
+            
+            // Actualizar la visualización
+            renderAnnouncements();
+            
+            // Si el admin está logueado, actualizar su vista también
+            if (isAdminLoggedIn) {
+                renderAdminAnnouncements();
             }
         }
-        
-        function getSetting(key, defaultValue) {
-            const saved = localStorage.getItem('appSettings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                return settings[key] !== undefined ? settings[key] : defaultValue;
-            }
-            return defaultValue;
+
+        // Guardar anuncios en localStorage
+        function saveAnnouncements() {
+            localStorage.setItem('churchAnnouncements', JSON.stringify(announcements));
         }
-        
-        // ============================================
-        // SONIDOS Y EFECTOS
-        // ============================================
-        function playBeepSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.1);
-            } catch (error) {
-                console.log("Audio no disponible");
+
+        // Renderizar anuncios según la categoría seleccionada
+        function renderAnnouncements() {
+            const selectedCategory = filterCategory.value;
+            
+            // Filtrar anuncios según la categoría seleccionada
+            let filteredAnnouncements = announcements;
+            if (selectedCategory !== 'all') {
+                filteredAnnouncements = announcements.filter(ann => ann.category === selectedCategory);
             }
-        }
-        
-        function playSuccessSound() {
-            try {
-                const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ');
-                audio.play();
-            } catch (error) {
-                // Silenciar error de audio
+            
+            // Mostrar mensaje si no hay anuncios
+            if (filteredAnnouncements.length === 0) {
+                emptyMessage.style.display = 'block';
+                announcementsContainer.innerHTML = '';
+                announcementsContainer.appendChild(emptyMessage);
+                return;
             }
-        }
-        
-        // ============================================
-        // EXPORTACIÓN A EXCEL/CSV
-        // ============================================
-        async function exportToExcel() {
-            try {
-                const products = await getAllProducts();
-                
-                if (products.length === 0) {
-                    showMessage('ℹ️ No hay productos para exportar', 'info');
-                    return;
-                }
-                
-                // Crear contenido CSV
-                let csv = 'Código,Nombre,Categoría,Cantidad,Unidad de Medida,Valor Unitario,Valor Total,Estado,Ubicación,Responsable,Descripción,Proveedor,Fecha Adquisición\n';
-                
-                products.forEach(product => {
-                    const totalValue = (product.valor || 0) * (product.cantidad || 1);
-                    csv += `"${product.codigo || ''}","${product.nombre || ''}","${product.categoria || ''}",${product.cantidad || 0},"${product.unidad_medida || 'unidades'}",${product.valor || 0},${totalValue},"${product.estado || ''}","${product.ubicacion || ''}","${product.responsable || ''}","${product.descripcion || ''}","${product.proveedor || ''}","${product.fecha_adquisicion || ''}"\n`;
-                });
-                
-                // Crear y descargar archivo
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `inventario_cobatab_${new Date().toISOString().split('T')[0]}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showMessage(`✅ ${products.length} productos exportados a CSV`, 'success');
-                
-            } catch (error) {
-                console.error("Error al exportar datos:", error);
-                showError("Error al exportar datos");
-            }
-        }
-        
-        async function clearAllProducts() {
-            try {
-                const transaction = db.transaction(['products'], 'readwrite');
-                const store = transaction.objectStore('products');
-                await store.clear();
-                
-                updateProductCount();
-                showMessage('✅ Base de datos limpiada', 'success');
-                
-            } catch (error) {
-                console.error("Error al limpiar base de datos:", error);
-                showError("Error al limpiar base de datos");
-            }
-        }
-        
-        // ============================================
-        // UI HELPERS
-        // ============================================
-        async function updateProductCount() {
-            try {
-                const products = await getAllProducts();
-                document.getElementById('productCount').textContent = products.length;
-                
-                // Calcular uso aproximado
-                const usage = Math.min(products.length * 2, 100); // 2% por producto
-                document.getElementById('dbUsage').style.width = usage + '%';
-                
-            } catch (error) {
-                console.error("Error actualizando contador:", error);
-            }
-        }
-        
-        async function loadHistory() {
-            try {
-                const history = await getHistory();
-                const historyList = document.getElementById('historyList');
-                
-                if (history.length === 0) {
-                    historyList.innerHTML = `
-                        <div style="text-align: center; padding: 40px 20px; color: #666;">
-                            <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
-                            <p>No hay escaneos recientes</p>
+            
+            // Ocultar mensaje de vacío
+            emptyMessage.style.display = 'none';
+            
+            // Generar HTML de los anuncios
+            let announcementsHTML = '';
+            
+            // Ordenar por fecha (más reciente primero)
+            const sortedAnnouncements = [...filteredAnnouncements].sort((a, b) => {
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            sortedAnnouncements.forEach(announcement => {
+                announcementsHTML += `
+                    <div class="announcement-card">
+                        <h3>${announcement.title}</h3>
+                        <div class="announcement-meta">
+                            <span><strong>Hora:</strong> ${announcement.time}</span>
+                            <span><strong>Fecha:</strong> ${announcement.date}</span>
                         </div>
-                    `;
-                    return;
-                }
-                
-                let html = '';
-                history.forEach(item => {
-                    html += `
-                        <div class="history-item">
-                            <div class="history-info">
-                                <div class="history-time">${item.fecha}</div>
-                                <div class="history-name">${item.nombre}</div>
-                                <div class="history-code">${item.codigo}</div>
-                            </div>
-                            <button class="history-action" onclick="loadProductFromHistory(${item.productId})">
-                                👁️
-                            </button>
+                        <div class="announcement-category">${announcement.category}</div>
+                        <div class="announcement-description">
+                            ${announcement.description}
                         </div>
-                    `;
-                });
-                
-                historyList.innerHTML = html;
-                
-            } catch (error) {
-                console.error("Error cargando historial:", error);
-            }
+                    </div>
+                `;
+            });
+            
+            announcementsContainer.innerHTML = announcementsHTML;
         }
-        
-        async function loadProductFromHistory(productId) {
-            try {
-                const product = await getProductById(productId);
-                await showProductInfo(product);
-                switchTab('results');
-            } catch (error) {
-                showError("Error al cargar producto del historial");
+
+        // Renderizar todos los anuncios en el panel de administrador
+        function renderAdminAnnouncements() {
+            // Mostrar mensaje si no hay anuncios
+            if (announcements.length === 0) {
+                adminEmptyMessage.style.display = 'block';
+                adminAnnouncements.innerHTML = '';
+                adminAnnouncements.appendChild(adminEmptyMessage);
+                return;
             }
+            
+            // Ocultar mensaje de vacío
+            adminEmptyMessage.style.display = 'none';
+            
+            // Generar HTML de los anuncios
+            let adminAnnouncementsHTML = '';
+            
+            // Ordenar por fecha (más reciente primero)
+            const sortedAnnouncements = [...announcements].sort((a, b) => {
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            sortedAnnouncements.forEach(announcement => {
+                adminAnnouncementsHTML += `
+                    <div class="announcement-card">
+                        <h3>${announcement.title}</h3>
+                        <div class="announcement-meta">
+                            <span><strong>Hora:</strong> ${announcement.time}</span>
+                            <span><strong>Fecha:</strong> ${announcement.date}</span>
+                            <span><strong>ID:</strong> ${announcement.id}</span>
+                        </div>
+                        <div class="announcement-category">${announcement.category}</div>
+                        <div class="announcement-description">
+                            ${announcement.description}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            adminAnnouncements.innerHTML = adminAnnouncementsHTML;
         }
-        
-        function showMessage(message, type = 'info') {
-            // Crear elemento de mensaje
-            const messageEl = document.createElement('div');
-            messageEl.style.cssText = `
-                position: fixed;
-                top: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 15px 25px;
-                border-radius: 10px;
-                background: ${type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1'};
-                color: ${type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460'};
-                border: 1px solid ${type === 'success' ? '#c3e6cb' : type === 'error' ? '#f5c6cb' : '#bee5eb'};
-                z-index: 3000;
-                font-weight: 600;
-                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                animation: slideDown 0.3s ease-out;
-                max-width: 90%;
-                text-align: center;
-            `;
+
+        // Mostrar mensajes temporales
+        function showMessage(text, type) {
+            formMessage.textContent = text;
+            formMessage.className = `message ${type}`;
             
-            // Animación CSS
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideDown {
-                    from { top: 50px; opacity: 0; }
-                    to { top: 100px; opacity: 1; }
-                }
-                @keyframes slideUp {
-                    from { top: 100px; opacity: 1; }
-                    to { top: 50px; opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
-            
-            messageEl.textContent = message;
-            document.body.appendChild(messageEl);
-            
-            // Remover después de 3 segundos
+            // Ocultar mensaje después de 3 segundos
             setTimeout(() => {
-                messageEl.style.animation = 'slideUp 0.3s ease-out';
-                setTimeout(() => {
-                    if (messageEl.parentNode) {
-                        document.body.removeChild(messageEl);
-                    }
-                }, 300);
+                formMessage.style.display = 'none';
             }, 3000);
         }
-        
-        function showError(message) {
-            showMessage(message, 'error');
-        }
-        
-        function syncWithServer() {
-            showMessage('ℹ️ Modo local activado - La sincronización está desactivada', 'info');
-        }
-        
-        // ============================================
-        // FUNCIONES ADICIONALES DEL PRODUCTO
-        // ============================================
-        function saveProductCard() {
-            if (!currentProduct) return;
-            
-            // Crear texto para guardar
-            const product = currentProduct;
-            const totalValue = (product.valor || 0) * (product.cantidad || 1);
-            
-            const content = `
-INVENTARIO COBATAB - FICHA DE PRODUCTO
-=======================================
 
-Código: ${product.codigo}
-Nombre: ${product.nombre}
-Categoría: ${product.categoria}
-Estado: ${product.estado}
-
-CANTIDAD Y VALOR:
-• Cantidad: ${product.cantidad} ${product.unidad_medida}
-• Valor unitario: $${parseFloat(product.valor).toFixed(2)}
-• Valor total: $${parseFloat(totalValue).toFixed(2)}
-
-UBICACIÓN Y RESPONSABLE:
-• Ubicación: ${product.ubicacion}
-• Responsable: ${product.responsable}
-• Proveedor: ${product.proveedor || 'No especificado'}
-
-INFORMACIÓN ADICIONAL:
-• Fecha adquisición: ${new Date(product.fecha_adquisicion || product.fecha_creacion).toLocaleDateString('es-MX')}
-• Descripción: ${product.descripcion || 'Sin descripción'}
-
----------------------------------------
-Generado: ${new Date().toLocaleString('es-MX')}
-App: Inventario COBATAB Plantel 09
-            `;
-            
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `producto_${product.codigo}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showMessage('✅ Ficha guardada como archivo de texto', 'success');
-        }
-        
-        function printProductCard() {
-            if (!currentProduct) return;
-            
-            const product = currentProduct;
-            const totalValue = (product.valor || 0) * (product.cantidad || 1);
-            
-            const printContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Producto: ${product.codigo}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        .header { text-align: center; border-bottom: 2px solid #8B0000; padding-bottom: 15px; margin-bottom: 20px; }
-                        .title { color: #8B0000; font-size: 24px; margin: 0; }
-                        .subtitle { color: #666; font-size: 14px; }
-                        .section { margin: 20px 0; }
-                        .section-title { background: #f5f5f5; padding: 8px 15px; font-weight: bold; border-left: 4px solid #8B0000; }
-                        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; }
-                        .info-item { padding: 5px 0; }
-                        .label { font-weight: bold; color: #555; }
-                        .value { color: #333; }
-                        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
-                        @media print {
-                            body { padding: 10px; }
-                            .no-print { display: none; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1 class="title">COBATAB Plantel 09</h1>
-                        <p class="subtitle">Ficha Técnica de Producto</p>
-                        <p>Fecha de impresión: ${new Date().toLocaleDateString('es-MX')}</p>
-                    </div>
-                    
-                    <div class="section">
-                        <div class="section-title">INFORMACIÓN BÁSICA</div>
-                        <div class="info-grid">
-                            <div class="info-item"><span class="label">Código:</span> <span class="value">${product.codigo}</span></div>
-                            <div class="info-item"><span class="label">Nombre:</span> <span class="value">${product.nombre}</span></div>
-                            <div class="info-item"><span class="label">Categoría:</span> <span class="value">${product.categoria}</span></div>
-                            <div class="info-item"><span class="label">Estado:</span> <span class="value">${product.estado}</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <div class="section-title">CANTIDAD Y VALOR</div>
-                        <div class="info-grid">
-                            <div class="info-item"><span class="label">Cantidad:</span> <span class="value">${product.cantidad} ${product.unidad_medida}</span></div>
-                            <div class="info-item"><span class="label">Valor unitario:</span> <span class="value">$${parseFloat(product.valor).toFixed(2)}</span></div>
-                            <div class="info-item"><span class="label">Valor total:</span> <span class="value"><strong>$${parseFloat(totalValue).toFixed(2)}</strong></span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="section">
-                        <div class="section-title">UBICACIÓN Y RESPONSABLE</div>
-                        <div class="info-grid">
-                            <div class="info-item"><span class="label">Ubicación:</span> <span class="value">${product.ubicacion}</span></div>
-                            <div class="info-item"><span class="label">Responsable:</span> <span class="value">${product.responsable}</span></div>
-                            <div class="info-item"><span class="label">Proveedor:</span> <span class="value">${product.proveedor || 'No especificado'}</span></div>
-                        </div>
-                    </div>
-                    
-                    ${product.descripcion ? `
-                    <div class="section">
-                        <div class="section-title">DESCRIPCIÓN</div>
-                        <p>${product.descripcion}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <div class="footer">
-                        <p>Documento generado por la App de Inventario COBATAB</p>
-                        <p>www.cobatab.edu.mx</p>
-                    </div>
-                    
-                    <div class="no-print" style="margin-top: 20px; text-align: center;">
-                        <button onclick="window.print()" style="padding: 10px 20px; background: #8B0000; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            🖨️ Imprimir
-                        </button>
-                        <button onclick="window.close()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
-                            ✖️ Cerrar
-                        </button>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(printContent);
-            printWindow.document.close();
-            
-            showMessage('✅ Abriendo vista de impresión...', 'success');
-        }
-        
-        // ============================================
-        // INSTALACIÓN COMO PWA
-        // ============================================
-        // Registrar Service Worker para PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/Plantel-09/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registrado:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Error registrando ServiceWorker:', error);
-                    });
-            });
-        }
-        
-        // Detectar si se está ejecutando como PWA
-        window.addEventListener('appinstalled', () => {
-            showMessage('✅ App instalada correctamente', 'success');
-        });
-        
-        // Solicitar instalación como PWA
-        let deferredPrompt;
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // Mostrar botón de instalación
-            const installBtn = document.createElement('button');
-            installBtn.textContent = '📲 Instalar App';
-            installBtn.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 12px 20px;
-                background: #8B0000;
-                color: white;
-                border: none;
-                border-radius: 25px;
-                font-weight: bold;
-                box-shadow: 0 4px 15px rgba(139,0,0,0.3);
-                z-index: 1000;
-                cursor: pointer;
-            `;
-            
-            installBtn.onclick = async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        showMessage('✅ App instalada', 'success');
-                    }
-                    deferredPrompt = null;
-                    document.body.removeChild(installBtn);
-                }
-            };
-            
-            document.body.appendChild(installBtn);
-            
-            // Ocultar después de 10 segundos
-            setTimeout(() => {
-                if (installBtn.parentNode) {
-                    document.body.removeChild(installBtn);
-                }
-            }, 10000);
-        });
+        // Inicializar la aplicación cuando se carga la página
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
