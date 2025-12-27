@@ -886,9 +886,37 @@
         }
     </style>
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+    <!-- Firebase SDK version 12.7.0 (mismo que la tuya) -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getDatabase, ref, set, get, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        
+        // Tu configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLASmgZ4vwEyUEJ-A2xx3pihcgvipEaiE",
+            authDomain: "iglesia-anuncios.firebaseapp.com",
+            databaseURL: "https://iglesia-anuncios-default-rtdb.firebaseio.com",
+            projectId: "iglesia-anuncios",
+            storageBucket: "iglesia-anuncios.firebasestorage.app",
+            messagingSenderId: "6291270000",
+            appId: "1:6291270000:web:abb42fefab0c938a1ec7b5"
+        };
+        
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Hacer disponible en el scope global
+        window.firebaseDatabase = database;
+        window.firebaseRef = ref;
+        window.firebaseSet = set;
+        window.firebaseGet = get;
+        window.firebaseRemove = remove;
+        window.firebaseOnValue = onValue;
+        
+        console.log("Firebase inicializado correctamente");
+    </script>
 </head>
 <body>
     <!-- Encabezado con login -->
@@ -1249,29 +1277,6 @@
     </div>
 
     <script>
-        // Configuración de Firebase - ¡REEMPLAZA ESTOS VALORES CON LOS DE TU PROYECTO FIREBASE!
-        const firebaseConfig = {
-            apiKey: "AIzaSyDexample1234567890abcdefghijklmnopq",
-            authDomain: "tu-proyecto.firebaseapp.com",
-            databaseURL: "https://tu-proyecto-default-rtdb.firebaseio.com",
-            projectId: "tu-proyecto",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef1234567890abcdef"
-        };
-
-        // Inicializar Firebase
-        let database;
-        try {
-            const app = firebase.initializeApp(firebaseConfig);
-            database = firebase.database(app);
-            console.log("Firebase inicializado correctamente");
-            updateConnectionStatus(true);
-        } catch (error) {
-            console.error("Error inicializando Firebase:", error);
-            updateConnectionStatus(false);
-        }
-
         // Credenciales de administrador
         const ADMIN_CREDENTIALS = {
             username: "Admin",
@@ -1368,7 +1373,7 @@
 
         // Cargar anuncios desde Firebase
         function loadAnnouncementsFromFirebase() {
-            if (!database) {
+            if (!window.firebaseDatabase) {
                 console.error("Firebase no está inicializado");
                 syncStatusText.textContent = 'Error: Firebase no inicializado';
                 syncStatus.className = 'message error';
@@ -1377,10 +1382,10 @@
             
             try {
                 // Referencia a la base de datos
-                const announcementsRef = database.ref('announcements');
+                const announcementsRef = window.firebaseRef(window.firebaseDatabase, 'announcements');
                 
                 // Escuchar cambios en tiempo real
-                announcementsRef.on('value', (snapshot) => {
+                window.firebaseOnValue(announcementsRef, (snapshot) => {
                     const data = snapshot.val();
                     
                     if (data) {
@@ -1428,7 +1433,7 @@
 
         // Guardar anuncios en Firebase
         async function saveAnnouncementToFirebase(announcement) {
-            if (!database) {
+            if (!window.firebaseDatabase) {
                 console.error("Firebase no está inicializado");
                 return false;
             }
@@ -1440,7 +1445,8 @@
                 }
                 
                 // Guardar en Firebase
-                await database.ref('announcements/' + announcement.id).set(announcement);
+                const announcementRef = window.firebaseRef(window.firebaseDatabase, 'announcements/' + announcement.id);
+                await window.firebaseSet(announcementRef, announcement);
                 console.log("Anuncio guardado en Firebase:", announcement.id);
                 return true;
             } catch (error) {
@@ -1451,13 +1457,14 @@
 
         // Eliminar anuncio de Firebase
         async function deleteAnnouncementFromFirebase(id) {
-            if (!database) {
+            if (!window.firebaseDatabase) {
                 console.error("Firebase no está inicializado");
                 return false;
             }
             
             try {
-                await database.ref('announcements/' + id).remove();
+                const announcementRef = window.firebaseRef(window.firebaseDatabase, 'announcements/' + id);
+                await window.firebaseRemove(announcementRef);
                 console.log("Anuncio eliminado de Firebase:", id);
                 return true;
             } catch (error) {
