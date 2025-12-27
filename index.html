@@ -18,6 +18,7 @@
             --verde: #10b981;
             --rojo: #ef4444;
             --naranja: #f59e0b;
+            --morado: #8b5cf6;
         }
         
         * {
@@ -38,46 +39,60 @@
         .header {
             background-color: var(--azul-principal);
             color: var(--blanco);
-            padding: 1.5rem 2rem;
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--sombra);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .logo {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
         }
         
         .logo h1 {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 600;
         }
         
         .logo-icon {
-            font-size: 2rem;
+            font-size: 1.8rem;
         }
         
         /* Formulario de login */
         .login-container {
             position: relative;
+            display: flex;
+            gap: 0.5rem;
         }
         
-        .login-btn {
+        .login-btn, .admin-view-btn {
             background-color: var(--azul-secundario);
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
             transition: background-color 0.3s;
+            font-size: 0.9rem;
         }
         
-        .login-btn:hover {
+        .login-btn:hover, .admin-view-btn:hover {
             background-color: #2563eb;
+        }
+        
+        .admin-view-btn {
+            background-color: var(--verde);
+            display: none;
+        }
+        
+        .admin-view-btn:hover {
+            background-color: #0da271;
         }
         
         .login-form {
@@ -85,7 +100,7 @@
             top: 100%;
             right: 0;
             background-color: var(--blanco);
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 8px;
             box-shadow: var(--sombra);
             width: 300px;
@@ -102,6 +117,7 @@
             margin-bottom: 1rem;
             color: var(--azul-principal);
             text-align: center;
+            font-size: 1.1rem;
         }
         
         .form-group {
@@ -112,13 +128,15 @@
             display: block;
             margin-bottom: 0.3rem;
             font-weight: 500;
+            font-size: 0.9rem;
         }
         
         .form-group input {
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.6rem;
             border: 1px solid var(--gris);
             border-radius: 4px;
+            font-size: 0.9rem;
         }
         
         .form-group input:focus {
@@ -130,13 +148,14 @@
             background-color: var(--azul-principal);
             color: white;
             border: none;
-            padding: 0.7rem;
+            padding: 0.6rem;
             width: 100%;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
             transition: background-color 0.3s;
             margin-top: 0.5rem;
+            font-size: 0.9rem;
         }
         
         .submit-btn:hover {
@@ -147,12 +166,13 @@
             background-color: var(--rojo);
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
             transition: background-color 0.3s;
             display: none;
+            font-size: 0.9rem;
         }
         
         .logout-btn:hover {
@@ -164,12 +184,13 @@
             background-color: var(--gris);
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
             transition: background-color 0.3s;
             display: none;
+            font-size: 0.9rem;
         }
         
         .back-btn:hover {
@@ -179,100 +200,138 @@
         /* Contenedor principal */
         .container {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+        
+        /* Mensaje de bienvenida */
+        .welcome-message {
+            background-color: var(--blanco);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .welcome-message h2 {
+            color: var(--azul-principal);
+            margin-bottom: 0.5rem;
         }
         
         /* Pantalla de selección de departamento */
         .department-selection {
             background-color: var(--blanco);
             border-radius: 8px;
-            padding: 3rem 2rem;
+            padding: 1.5rem;
             box-shadow: var(--sombra);
-            text-align: center;
         }
         
         .department-selection h2 {
             color: var(--azul-principal);
-            margin-bottom: 2rem;
-            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
         }
         
         .departments-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .department-card {
             background-color: var(--azul-claro);
             border-radius: 8px;
-            padding: 2rem 1.5rem;
+            padding: 1.2rem 1rem;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
             border: 2px solid transparent;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .department-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: var(--sombra);
             border-color: var(--azul-secundario);
         }
         
         .department-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
             color: var(--azul-principal);
         }
         
         .department-card h3 {
             color: var(--azul-principal);
-            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
         }
         
         .department-card p {
             color: var(--gris-oscuro);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         
-        .others-option {
-            margin-top: 2rem;
-            padding-top: 2rem;
+        /* Subcategorías para Ministerio Joven */
+        .subcategories {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
             border-top: 2px solid var(--azul-claro);
+            display: none;
         }
         
-        .others-option h3 {
+        .subcategories.active {
+            display: block;
+        }
+        
+        .subcategories h3 {
             color: var(--azul-principal);
             margin-bottom: 1rem;
+            text-align: center;
         }
         
-        .others-form {
-            display: flex;
-            flex-direction: column;
+        .subcategories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 1rem;
-            max-width: 500px;
-            margin: 0 auto;
         }
         
-        .others-form input {
-            padding: 0.8rem;
-            border: 1px solid var(--gris);
-            border-radius: 4px;
+        .subcategory-card {
+            background-color: var(--blanco);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid var(--azul-claro);
+            text-align: center;
         }
         
-        .others-form input:focus {
-            outline: none;
+        .subcategory-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra);
             border-color: var(--azul-secundario);
+        }
+        
+        .subcategory-card h4 {
+            color: var(--azul-principal);
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
         }
         
         /* Sección de formulario de anuncios */
         .announcement-form-section {
             background-color: var(--blanco);
             border-radius: 8px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: var(--sombra);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             display: none;
         }
         
@@ -282,15 +341,16 @@
         
         .section-title {
             color: var(--azul-principal);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--azul-claro);
+            font-size: 1.3rem;
         }
         
         .announcement-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
         }
         
         .form-control {
@@ -299,20 +359,22 @@
         }
         
         .form-control label {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             font-weight: 500;
+            font-size: 0.9rem;
         }
         
         .form-control select, 
         .form-control input, 
         .form-control textarea {
-            padding: 0.7rem;
+            padding: 0.6rem;
             border: 1px solid var(--gris);
             border-radius: 4px;
+            font-size: 0.9rem;
         }
         
         .form-control textarea {
-            min-height: 100px;
+            min-height: 80px;
             resize: vertical;
         }
         
@@ -328,11 +390,11 @@
             background-color: var(--azul-principal);
             color: white;
             border: none;
-            padding: 0.8rem;
+            padding: 0.7rem;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: background-color 0.3s;
         }
         
@@ -344,7 +406,7 @@
         .announcements-section {
             background-color: var(--blanco);
             border-radius: 8px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: var(--sombra);
             display: none;
         }
@@ -357,26 +419,29 @@
             background-color: var(--azul-claro);
             padding: 1rem;
             border-radius: 8px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
         .current-department h3 {
             color: var(--azul-principal);
+            font-size: 1.2rem;
         }
         
         .announcements-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
         }
         
         .announcement-card {
             background-color: var(--azul-claro);
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-left: 4px solid var(--azul-principal);
             position: relative;
         }
@@ -388,14 +453,16 @@
         .announcement-card h3 {
             color: var(--azul-principal);
             margin-bottom: 0.5rem;
-            padding-right: 60px;
+            font-size: 1.1rem;
+            padding-right: 50px;
         }
         
         .announcement-meta {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.85rem;
             color: var(--gris-oscuro);
         }
         
@@ -404,20 +471,21 @@
             color: white;
             padding: 0.2rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             display: inline-block;
             margin-bottom: 0.5rem;
         }
         
         .announcement-description {
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             line-height: 1.5;
+            font-size: 0.9rem;
         }
         
         .announcement-author {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gris-oscuro);
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             padding-top: 0.5rem;
             border-top: 1px dashed var(--gris);
         }
@@ -425,22 +493,22 @@
         /* Botones de acción */
         .announcement-actions {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 1.2rem;
+            right: 1.2rem;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
         
         .action-btn {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 4px;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: transform 0.2s;
         }
         
@@ -458,60 +526,12 @@
             color: white;
         }
         
-        /* Panel de edición de anuncios */
-        .edit-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .edit-panel.active {
-            display: flex;
-        }
-        
-        .edit-form {
-            background-color: var(--blanco);
-            width: 90%;
-            max-width: 600px;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: var(--sombra);
-        }
-        
-        .edit-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .edit-header h3 {
-            color: var(--azul-principal);
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gris-oscuro);
-        }
-        
         /* Panel de administrador */
         .admin-panel {
             background-color: var(--blanco);
             border-radius: 8px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: var(--sombra);
-            margin-top: 2rem;
             display: none;
         }
         
@@ -521,17 +541,18 @@
         
         .admin-announcements {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
         }
         
         /* Mensajes */
         .message {
-            padding: 1rem;
+            padding: 0.8rem;
             border-radius: 4px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             text-align: center;
             display: none;
+            font-size: 0.9rem;
         }
         
         .message.success {
@@ -558,30 +579,57 @@
         .empty-message {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 2rem;
+            padding: 1.5rem;
             color: var(--gris);
+            font-size: 0.95rem;
         }
         
-        /* Responsive */
+        /* Responsive para teléfonos */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
-                gap: 1rem;
                 text-align: center;
+                padding: 0.8rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.2rem;
             }
             
             .login-container {
-                position: static;
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
             }
             
             .login-form {
-                position: static;
-                width: 100%;
-                margin-top: 1rem;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 300px;
             }
             
             .departments-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .department-card {
+                min-height: 100px;
+                padding: 0.8rem;
+            }
+            
+            .department-icon {
+                font-size: 1.5rem;
+            }
+            
+            .department-card h3 {
+                font-size: 0.9rem;
+            }
+            
+            .subcategories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
             
             .announcement-form {
@@ -594,13 +642,50 @@
             
             .announcement-card h3 {
                 padding-right: 0;
-                margin-bottom: 1rem;
+                margin-bottom: 0.8rem;
             }
             
             .announcement-actions {
                 position: static;
-                margin-bottom: 1rem;
+                margin-bottom: 0.8rem;
                 justify-content: flex-start;
+            }
+            
+            .current-department {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .current-department h3 {
+                font-size: 1.1rem;
+            }
+            
+            .container {
+                padding: 0 0.8rem;
+                margin: 1rem auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .departments-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .subcategories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .department-card {
+                min-height: 90px;
+                padding: 0.7rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -613,7 +698,8 @@
             <h1>Gestor de Anuncios - Iglesia</h1>
         </div>
         <div class="login-container">
-            <button id="loginBtn" class="login-btn">Iniciar Sesión Administrador</button>
+            <button id="loginBtn" class="login-btn">Iniciar Sesión</button>
+            <button id="adminViewBtn" class="admin-view-btn">Vista Admin</button>
             <div id="loginForm" class="login-form">
                 <h3>Acceso Administrador</h3>
                 <div class="form-group">
@@ -625,68 +711,163 @@
                     <input type="password" id="password" placeholder="Ingresa tu contraseña">
                 </div>
                 <button id="submitLogin" class="submit-btn">Ingresar</button>
-                <p style="margin-top: 0.7rem; font-size: 0.85rem; color: #666;">
+                <p style="margin-top: 0.7rem; font-size: 0.8rem; color: #666;">
                     Credenciales: Usuario: <strong>Admin</strong>, Contraseña: <strong>Aa.1234#</strong>
                 </p>
             </div>
             <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
-            <button id="backBtn" class="back-btn">← Volver a Departamentos</button>
+            <button id="backBtn" class="back-btn">← Volver</button>
         </div>
     </header>
 
     <!-- Contenido principal -->
     <main class="container">
+        <!-- Mensaje de bienvenida -->
+        <div id="welcomeMessage" class="welcome-message">
+            <h2>Bienvenido al Sistema de Anuncios de la Iglesia</h2>
+            <p>Selecciona tu departamento o ministerio para ver los anuncios correspondientes</p>
+        </div>
+
         <!-- Pantalla de selección de departamento -->
         <section id="departmentSelection" class="department-selection">
             <h2>Selecciona tu Departamento o Ministerio</h2>
             <div class="departments-grid">
-                <div class="department-card" data-department="Ministerio Juvenil">
+                <!-- Ministerio Joven -->
+                <div class="department-card" data-department="Ministerio Joven">
                     <div class="department-icon">👨‍🎓</div>
-                    <h3>Ministerio Juvenil</h3>
-                    <p>Anuncios para jóvenes y actividades juveniles</p>
+                    <h3>Ministerio Joven</h3>
+                    <p>Aventureros, Conquistadores, Guías</p>
                 </div>
-                <div class="department-card" data-department="Ministerio Personal">
-                    <div class="department-icon">🙏</div>
-                    <h3>Ministerio Personal</h3>
-                    <p>Anuncios personales y espirituales</p>
+                
+                <!-- Ministerio Infantil -->
+                <div class="department-card" data-department="Ministerio Infantil">
+                    <div class="department-icon">👶</div>
+                    <h3>Ministerio Infantil</h3>
+                    <p>Anuncios para niños</p>
                 </div>
-                <div class="department-card" data-department="Ministerio de la Mujer">
-                    <div class="department-icon">👩</div>
-                    <h3>Ministerio de la Mujer</h3>
-                    <p>Actividades y anuncios para mujeres</p>
-                </div>
-                <div class="department-card" data-department="Ancianos">
-                    <div class="department-icon">👴</div>
-                    <h3>Ancianos</h3>
-                    <p>Anuncios del consejo de ancianos</p>
-                </div>
-                <div class="department-card" data-department="Diáconos">
-                    <div class="department-icon">👨‍💼</div>
-                    <h3>Diáconos</h3>
-                    <p>Anuncios del grupo de diáconos</p>
-                </div>
+                
+                <!-- Escuela Sabática -->
                 <div class="department-card" data-department="Escuela Sabática">
                     <div class="department-icon">📚</div>
                     <h3>Escuela Sabática</h3>
-                    <p>Anuncios de clases y estudios bíblicos</p>
+                    <p>Clases y estudios bíblicos</p>
                 </div>
-                <div class="department-card" data-department="Evangelismo">
+                
+                <!-- Ministerio Personal -->
+                <div class="department-card" data-department="Ministerio Personal">
+                    <div class="department-icon">🙏</div>
+                    <h3>Ministerio Personal</h3>
+                    <p>Crecimiento espiritual</p>
+                </div>
+                
+                <!-- Ministerio de la Mujer -->
+                <div class="department-card" data-department="Ministerio de la Mujer">
+                    <div class="department-icon">👩</div>
+                    <h3>Ministerio de la Mujer</h3>
+                    <p>Actividades para mujeres</p>
+                </div>
+                
+                <!-- Ministerio de la Familia -->
+                <div class="department-card" data-department="Ministerio de la Familia">
+                    <div class="department-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Ministerio de la Familia</h3>
+                    <p>Anuncios familiares</p>
+                </div>
+                
+                <!-- Mayordomía Cristiana -->
+                <div class="department-card" data-department="Mayordomía Cristiana">
+                    <div class="department-icon">💼</div>
+                    <h3>Mayordomía Cristiana</h3>
+                    <p>Administración y recursos</p>
+                </div>
+                
+                <!-- Ministerio de Salud -->
+                <div class="department-card" data-department="Ministerio de Salud">
+                    <div class="department-icon">🏥</div>
+                    <h3>Ministerio de Salud</h3>
+                    <p>Salud y bienestar</p>
+                </div>
+                
+                <!-- Comunicación -->
+                <div class="department-card" data-department="Comunicación">
                     <div class="department-icon">📢</div>
-                    <h3>Evangelismo</h3>
-                    <p>Anuncios de campañas evangelísticas</p>
+                    <h3>Comunicación</h3>
+                    <p>Medios y difusión</p>
                 </div>
-                <div class="department-card" data-department="Música y Alabanza">
-                    <div class="department-icon">🎵</div>
-                    <h3>Música y Alabanza</h3>
-                    <p>Anuncios del grupo de alabanza</p>
+                
+                <!-- Director de Canto -->
+                <div class="department-card" data-department="Director de Canto">
+                    <div class="department-icon">🎤</div>
+                    <h3>Director de Canto</h3>
+                    <p>Alabanza y música</p>
+                </div>
+                
+                <!-- Director de Sonido -->
+                <div class="department-card" data-department="Director de Sonido">
+                    <div class="department-icon">🎧</div>
+                    <h3>Director de Sonido</h3>
+                    <p>Audiovisual y sonido</p>
+                </div>
+                
+                <!-- Dorcas -->
+                <div class="department-card" data-department="Dorcas">
+                    <div class="department-icon">❤️</div>
+                    <h3>Dorcas</h3>
+                    <p>Servicio y ayuda social</p>
+                </div>
+                
+                <!-- Libertad Religiosa -->
+                <div class="department-card" data-department="Libertad Religiosa">
+                    <div class="department-icon">⚖️</div>
+                    <h3>Libertad Religiosa</h3>
+                    <p>Derechos y libertades</p>
+                </div>
+                
+                <!-- Diáconos y Diaconisas -->
+                <div class="department-card" data-department="Diáconos y Diaconisas">
+                    <div class="department-icon">👨‍💼</div>
+                    <h3>Diáconos y Diaconisas</h3>
+                    <p>Servicio en la iglesia</p>
+                </div>
+                
+                <!-- Ancianos de Iglesia -->
+                <div class="department-card" data-department="Ancianos de Iglesia">
+                    <div class="department-icon">👴</div>
+                    <h3>Ancianos de Iglesia</h3>
+                    <p>Consejo de ancianos</p>
+                </div>
+                
+                <!-- Secretaría -->
+                <div class="department-card" data-department="Secretaría de Iglesia">
+                    <div class="department-icon">📝</div>
+                    <h3>Secretaría de Iglesia</h3>
+                    <p>Documentación y registros</p>
+                </div>
+                
+                <!-- Tesorería -->
+                <div class="department-card" data-department="Tesoreria">
+                    <div class="department-icon">💰</div>
+                    <h3>Tesoreria</h3>
+                    <p>Finanzas de la iglesia</p>
                 </div>
             </div>
             
-            <div class="others-option">
-                <h3>¿No encuentras tu departamento?</h3>
-                <div class="others-form">
-                    <input type="text" id="otherDepartment" placeholder="Escribe el nombre de tu departamento">
-                    <button id="goToOtherDepartment" class="submit-btn">Ir a este departamento</button>
+            <!-- Subcategorías para Ministerio Joven -->
+            <div id="ministerioJovenSubcategories" class="subcategories">
+                <h3>Selecciona una subcategoría del Ministerio Joven</h3>
+                <div class="subcategories-grid">
+                    <div class="subcategory-card" data-department="Aventureros">
+                        <h4>Aventureros</h4>
+                        <p>Niños 6-9 años</p>
+                    </div>
+                    <div class="subcategory-card" data-department="Conquistadores">
+                        <h4>Conquistadores</h4>
+                        <p>Jóvenes 10-15 años</p>
+                    </div>
+                    <div class="subcategory-card" data-department="Guías Mayores">
+                        <h4>Guías Mayores</h4>
+                        <p>Jóvenes 16-21 años</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -725,7 +906,7 @@
         <section id="announcementsSection" class="announcements-section">
             <div class="current-department">
                 <h3 id="currentDepartmentTitle">Anuncios del Departamento</h3>
-                <button id="createAnnouncementBtn" class="submit-btn" style="padding: 0.5rem 1rem;">+ Crear Anuncio</button>
+                <button id="createAnnouncementBtn" class="submit-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Crear Anuncio</button>
             </div>
             <div id="announcementsContainer" class="announcements-container">
                 <!-- Los anuncios se cargarán aquí dinámicamente -->
@@ -735,9 +916,13 @@
             </div>
         </section>
 
-        <!-- Panel de administrador (solo visible al iniciar sesión) -->
+        <!-- Panel de administrador -->
         <section id="adminPanel" class="admin-panel">
             <h2 class="section-title">Panel de Administrador - Todos los Anuncios</h2>
+            <div class="current-department">
+                <h3>Vista completa de todos los anuncios de todos los departamentos</h3>
+                <button id="backToDepartmentsBtn" class="submit-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">← Volver a Departamentos</button>
+            </div>
             <div id="adminAnnouncements" class="admin-announcements">
                 <!-- Los anuncios del panel de administrador se cargarán aquí -->
                 <div class="empty-message" id="adminEmptyMessage">
@@ -796,43 +981,51 @@
         const initialAnnouncements = [
             {
                 id: 1,
-                department: "Ministerio Juvenil",
+                department: "Ministerio Joven",
+                subdepartment: "Conquistadores",
                 time: "18:00",
-                title: "Retiro Espiritual Juvenil",
-                description: "Retiro juvenil en la montaña este fin de semana. Traer ropa abrigadora y Biblia.",
-                date: "2023-10-15",
-                author: "Pastor Juan",
-                authorId: "pastor_juan"
+                title: "Campamento de Fin de Semana",
+                description: "Campamento para conquistadores en el bosque. Llevar tienda de campaña y ropa abrigadora.",
+                date: "2023-11-15",
+                author: "Director Juan",
+                authorId: "director_juan",
+                createdAt: "2023-10-10T10:00:00"
             },
             {
                 id: 2,
                 department: "Escuela Sabática",
+                subdepartment: "",
                 time: "09:30",
-                title: "Estudio de la Lección 5",
-                description: "Estudio de la lección de esta semana en el salón principal. Todos invitados.",
-                date: "2023-10-20",
-                author: "Maestra María",
-                authorId: "maria_maestra"
+                title: "Estudio Bíblico Especial",
+                description: "Estudio del libro de Apocalipsis en el salón principal.",
+                date: "2023-11-20",
+                author: "Profesor Pedro",
+                authorId: "profesor_pedro",
+                createdAt: "2023-10-11T14:30:00"
             },
             {
                 id: 3,
                 department: "Ministerio de la Mujer",
+                subdepartment: "",
                 time: "15:00",
-                title: "Reunión de Oración",
-                description: "Reunión de oración especial por las familias de la congregación.",
-                date: "2023-10-18",
-                author: "Hermana Luisa",
-                authorId: "luisa_hermana"
+                title: "Retiro Espiritual Femenino",
+                description: "Retiro de mujeres en la casa de retiro. Tema: La mujer virtuosa.",
+                date: "2023-11-18",
+                author: "Hermana María",
+                authorId: "maria_hermana",
+                createdAt: "2023-10-12T09:15:00"
             },
             {
                 id: 4,
-                department: "Música y Alabanza",
-                time: "19:00",
-                title: "Ensayo de Alabanza",
-                description: "Ensayo general del grupo de alabanza este viernes.",
-                date: "2023-10-22",
-                author: "Director David",
-                authorId: "david_director"
+                department: "Aventureros",
+                subdepartment: "",
+                time: "16:00",
+                title: "Día de Manualidades",
+                description: "Los aventureros crearán manualidades para el día de la madre.",
+                date: "2023-11-22",
+                author: "Directora Ana",
+                authorId: "ana_directora",
+                createdAt: "2023-10-13T16:45:00"
             }
         ];
 
@@ -842,18 +1035,6 @@
             password: "Aa.1234#"
         };
 
-        // Departamentos predefinidos
-        const DEPARTMENTS = [
-            "Ministerio Juvenil",
-            "Ministerio Personal", 
-            "Ministerio de la Mujer",
-            "Ancianos",
-            "Diáconos",
-            "Escuela Sabática",
-            "Evangelismo",
-            "Música y Alabanza"
-        ];
-
         // Estado de la aplicación
         let announcements = [];
         let isAdminLoggedIn = false;
@@ -862,12 +1043,14 @@
         let currentEditId = null;
         let currentUser = null;
         let currentDepartment = null;
-        let currentView = 'departmentSelection'; // 'departmentSelection', 'announcements', 'form'
+        let currentView = 'departmentSelection'; // 'departmentSelection', 'announcements', 'form', 'admin'
+        let currentSubdepartment = null;
 
         // Elementos del DOM
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const backBtn = document.getElementById('backBtn');
+        const adminViewBtn = document.getElementById('adminViewBtn');
         const loginForm = document.getElementById('loginForm');
         const submitLogin = document.getElementById('submitLogin');
         const usernameInput = document.getElementById('username');
@@ -897,8 +1080,9 @@
         const currentDepartmentTitle = document.getElementById('currentDepartmentTitle');
         const formSectionTitle = document.getElementById('formSectionTitle');
         const selectedDepartmentInput = document.getElementById('selectedDepartment');
-        const otherDepartmentInput = document.getElementById('otherDepartment');
-        const goToOtherDepartmentBtn = document.getElementById('goToOtherDepartment');
+        const ministerioJovenSubcategories = document.getElementById('ministerioJovenSubcategories');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const backToDepartmentsBtn = document.getElementById('backToDepartmentsBtn');
 
         // Inicializar la aplicación
         function initApp() {
@@ -934,6 +1118,8 @@
             if (adminSession === 'active') {
                 isAdminLoggedIn = true;
                 updateLoginUI();
+                // Si el admin ya estaba logueado, mostrar vista admin
+                showAdminView();
             }
             
             // Configurar event listeners
@@ -971,7 +1157,18 @@
             logoutBtn.addEventListener('click', handleLogout);
             
             // Botón de volver
-            backBtn.addEventListener('click', goBackToDepartments);
+            backBtn.addEventListener('click', goBack);
+            
+            // Botón de vista admin
+            adminViewBtn.addEventListener('click', showAdminView);
+            
+            // Botón para volver a departamentos desde admin
+            backToDepartmentsBtn.addEventListener('click', () => {
+                isAdminLoggedIn = false;
+                localStorage.removeItem('adminSession');
+                updateLoginUI();
+                showView('departmentSelection');
+            });
             
             // Enviar formulario de anuncio
             document.getElementById('announcementForm').addEventListener('submit', handleAnnouncementSubmit);
@@ -997,28 +1194,26 @@
             
             // Seleccionar departamento
             document.querySelectorAll('.department-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const department = card.getAttribute('data-department');
+                    
+                    // Si es Ministerio Joven, mostrar subcategorías
+                    if (department === 'Ministerio Joven') {
+                        ministerioJovenSubcategories.classList.add('active');
+                        currentDepartment = department;
+                        currentSubdepartment = null;
+                    } else {
+                        selectDepartment(department);
+                    }
+                });
+            });
+            
+            // Seleccionar subcategoría de Ministerio Joven
+            document.querySelectorAll('.subcategory-card').forEach(card => {
                 card.addEventListener('click', () => {
                     const department = card.getAttribute('data-department');
                     selectDepartment(department);
                 });
-            });
-            
-            // Ir a departamento personalizado
-            goToOtherDepartmentBtn.addEventListener('click', () => {
-                const department = otherDepartmentInput.value.trim();
-                if (department) {
-                    selectDepartment(department);
-                } else {
-                    showMessage('Por favor escribe el nombre de un departamento.', 'error');
-                }
-            });
-            
-            // También permitir Enter en el campo de departamento personalizado
-            otherDepartmentInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    goToOtherDepartmentBtn.click();
-                }
             });
         }
 
@@ -1036,13 +1231,8 @@
                 usernameInput.value = '';
                 passwordInput.value = '';
                 
-                // Actualizar la visualización si estamos viendo anuncios
-                if (currentView === 'announcements') {
-                    renderAnnouncements();
-                }
-                
-                // Mostrar panel de admin
-                renderAdminAnnouncements();
+                // Mostrar vista de administrador
+                showAdminView();
             } else {
                 showMessage('Credenciales incorrectas. Intenta nuevamente.', 'error');
             }
@@ -1055,10 +1245,8 @@
             updateLoginUI();
             showMessage('Sesión de administrador cerrada.', 'success');
             
-            // Actualizar la visualización si estamos viendo anuncios
-            if (currentView === 'announcements') {
-                renderAnnouncements();
-            }
+            // Volver a vista de departamentos
+            showView('departmentSelection');
         }
 
         // Actualizar la UI según el estado de login
@@ -1066,32 +1254,68 @@
             if (isAdminLoggedIn) {
                 loginBtn.style.display = 'none';
                 logoutBtn.style.display = 'block';
-                adminPanel.classList.add('active');
+                adminViewBtn.style.display = 'block';
+                welcomeMessage.style.display = 'none';
             } else {
                 loginBtn.style.display = 'block';
                 logoutBtn.style.display = 'none';
-                adminPanel.classList.remove('active');
+                adminViewBtn.style.display = 'none';
+                welcomeMessage.style.display = 'block';
             }
+        }
+
+        // Mostrar vista de administrador
+        function showAdminView() {
+            if (!isAdminLoggedIn) {
+                showMessage('Debes iniciar sesión como administrador primero.', 'error');
+                loginForm.classList.add('active');
+                return;
+            }
+            
+            currentView = 'admin';
+            
+            // Ocultar todas las vistas
+            departmentSelection.style.display = 'none';
+            announcementFormSection.classList.remove('active');
+            announcementsSection.classList.remove('active');
+            adminPanel.classList.add('active');
+            backBtn.style.display = 'block';
+            welcomeMessage.style.display = 'none';
+            
+            // Renderizar todos los anuncios
+            renderAdminAnnouncements();
         }
 
         // Seleccionar un departamento
         function selectDepartment(department) {
             currentDepartment = department;
-            currentDepartmentTitle.textContent = `Anuncios del Departamento: ${department}`;
+            currentDepartmentTitle.textContent = `Anuncios: ${department}`;
             selectedDepartmentInput.value = department;
             
-            // Limpiar campo de departamento personalizado
-            otherDepartmentInput.value = '';
+            // Ocultar subcategorías si estaban visibles
+            ministerioJovenSubcategories.classList.remove('active');
             
             // Mostrar vista de anuncios
             showView('announcements');
             renderAnnouncements();
         }
 
-        // Volver a la selección de departamentos
-        function goBackToDepartments() {
-            currentDepartment = null;
-            showView('departmentSelection');
+        // Volver atrás
+        function goBack() {
+            if (currentView === 'form') {
+                showView('announcements');
+            } else if (currentView === 'announcements') {
+                // Si estamos en subcategorías de Ministerio Joven, volver a departamentos
+                if (currentDepartment === 'Ministerio Joven' && ministerioJovenSubcategories.classList.contains('active')) {
+                    ministerioJovenSubcategories.classList.remove('active');
+                    currentDepartment = null;
+                    currentSubdepartment = null;
+                } else {
+                    showView('departmentSelection');
+                }
+            } else if (currentView === 'admin') {
+                showView('departmentSelection');
+            }
         }
 
         // Mostrar diferentes vistas
@@ -1102,17 +1326,26 @@
             departmentSelection.style.display = 'none';
             announcementFormSection.classList.remove('active');
             announcementsSection.classList.remove('active');
+            adminPanel.classList.remove('active');
             backBtn.style.display = 'none';
+            welcomeMessage.style.display = 'none';
             
             // Mostrar la vista correspondiente
             if (view === 'departmentSelection') {
                 departmentSelection.style.display = 'block';
+                welcomeMessage.style.display = 'block';
+                if (isAdminLoggedIn) {
+                    adminViewBtn.style.display = 'block';
+                }
             } else if (view === 'form') {
                 announcementFormSection.classList.add('active');
                 backBtn.style.display = 'block';
                 formSectionTitle.textContent = `Crear Anuncio para: ${currentDepartment}`;
             } else if (view === 'announcements') {
                 announcementsSection.classList.add('active');
+                backBtn.style.display = 'block';
+            } else if (view === 'admin') {
+                adminPanel.classList.add('active');
                 backBtn.style.display = 'block';
             }
         }
@@ -1144,7 +1377,8 @@
                 description,
                 date: date,
                 author: author,
-                authorId: currentUser
+                authorId: currentUser,
+                createdAt: new Date().toISOString()
             };
             
             // Agregar al array de anuncios
@@ -1291,8 +1525,11 @@
                 showMessage('Anuncio eliminado exitosamente.', 'success');
                 
                 // Actualizar la visualización
-                renderAnnouncements();
-                renderAdminAnnouncements();
+                if (currentView === 'admin') {
+                    renderAdminAnnouncements();
+                } else {
+                    renderAnnouncements();
+                }
             }
         }
 
