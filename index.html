@@ -15,6 +15,9 @@
             --gris: #9ca3af;
             --gris-oscuro: #374151;
             --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --verde: #10b981;
+            --rojo: #ef4444;
+            --naranja: #f59e0b;
         }
         
         * {
@@ -141,7 +144,7 @@
         }
         
         .logout-btn {
-            background-color: #dc2626;
+            background-color: var(--rojo);
             color: white;
             border: none;
             padding: 0.6rem 1.2rem;
@@ -269,11 +272,17 @@
             border-radius: 8px;
             padding: 1.5rem;
             border-left: 4px solid var(--azul-principal);
+            position: relative;
+        }
+        
+        .announcement-card.mine {
+            border-left-color: var(--naranja);
         }
         
         .announcement-card h3 {
             color: var(--azul-principal);
             margin-bottom: 0.5rem;
+            padding-right: 60px;
         }
         
         .announcement-meta {
@@ -290,11 +299,104 @@
             padding: 0.2rem 0.5rem;
             border-radius: 4px;
             font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 0.5rem;
         }
         
         .announcement-description {
             margin-top: 1rem;
             line-height: 1.5;
+        }
+        
+        .announcement-author {
+            font-size: 0.85rem;
+            color: var(--gris-oscuro);
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed var(--gris);
+        }
+        
+        /* Botones de acción */
+        .announcement-actions {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .edit-btn {
+            background-color: var(--verde);
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: var(--rojo);
+            color: white;
+        }
+        
+        /* Panel de edición de anuncios */
+        .edit-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .edit-panel.active {
+            display: flex;
+        }
+        
+        .edit-form {
+            background-color: var(--blanco);
+            width: 90%;
+            max-width: 600px;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--sombra);
+        }
+        
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .edit-header h3 {
+            color: var(--azul-principal);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gris-oscuro);
         }
         
         /* Panel de administrador */
@@ -335,6 +437,13 @@
             display: block;
         }
         
+        .message.info {
+            background-color: var(--azul-claro);
+            color: var(--azul-principal);
+            border: 1px solid var(--azul-secundario);
+            display: block;
+        }
+        
         .empty-message {
             grid-column: 1 / -1;
             text-align: center;
@@ -366,6 +475,17 @@
             
             .announcements-container, .admin-announcements {
                 grid-template-columns: 1fr;
+            }
+            
+            .announcement-card h3 {
+                padding-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .announcement-actions {
+                position: static;
+                margin-bottom: 1rem;
+                justify-content: flex-start;
             }
         }
     </style>
@@ -426,6 +546,14 @@
                     <label for="title">Título del anuncio:</label>
                     <input type="text" id="title" placeholder="Ej: Reunión de oración" required>
                 </div>
+                <div class="form-control">
+                    <label for="date">Fecha del evento:</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-control">
+                    <label for="author">Tu nombre (autor):</label>
+                    <input type="text" id="author" placeholder="Tu nombre" required>
+                </div>
                 <div class="form-control full-width">
                     <label for="description">Descripción:</label>
                     <textarea id="description" placeholder="Describe los detalles del anuncio..." required></textarea>
@@ -435,7 +563,7 @@
             <div id="formMessage" class="message"></div>
         </section>
 
-        <!-- Sección para mostrar anuncios (vista normal) -->
+        <!-- Sección para mostrar anuncios (visible para todos) -->
         <section class="announcements-section">
             <h2 class="section-title">Anuncios Publicados</h2>
             <div class="category-filter">
@@ -472,6 +600,60 @@
         </section>
     </main>
 
+    <!-- Panel de edición de anuncios -->
+    <div id="editPanel" class="edit-panel">
+        <div class="edit-form">
+            <div class="edit-header">
+                <h3>Editar Anuncio</h3>
+                <button id="closeEditBtn" class="close-btn">×</button>
+            </div>
+            <form id="editAnnouncementForm">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="editAuthor">
+                <div class="announcement-form">
+                    <div class="form-control">
+                        <label for="editCategory">Categoría:</label>
+                        <select id="editCategory" required>
+                            <option value="" disabled selected>Selecciona una categoría</option>
+                            <option value="Ministerio Juvenil">Ministerio Juvenil</option>
+                            <option value="Ministerio Personal">Ministerio Personal</option>
+                            <option value="Ministerio de la Mujer">Ministerio de la Mujer</option>
+                            <option value="Ancianos">Ancianos</option>
+                            <option value="Diáconos">Diáconos</option>
+                            <option value="Escuela Sabática">Escuela Sabática</option>
+                            <option value="Evangelismo">Evangelismo</option>
+                            <option value="Música y Alabanza">Música y Alabanza</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label for="editTime">Hora del evento:</label>
+                        <input type="time" id="editTime" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editTitle">Título del anuncio:</label>
+                        <input type="text" id="editTitle" placeholder="Ej: Reunión de oración" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editDate">Fecha del evento:</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editAuthorDisplay">Autor (no editable):</label>
+                        <input type="text" id="editAuthorDisplay" disabled style="background-color: #f3f4f6;">
+                    </div>
+                    <div class="form-control full-width">
+                        <label for="editDescription">Descripción:</label>
+                        <textarea id="editDescription" placeholder="Describe los detalles del anuncio..." required></textarea>
+                    </div>
+                    <div class="form-control" style="grid-column: 1 / -1; display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-submit-announcement" style="flex: 1;">Guardar Cambios</button>
+                        <button type="button" id="cancelEditBtn" class="btn-submit-announcement" style="background-color: var(--gris); flex: 1;">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Datos de ejemplo para inicializar la aplicación
         const initialAnnouncements = [
@@ -481,7 +663,9 @@
                 time: "18:00",
                 title: "Retiro Espiritual Juvenil",
                 description: "Retiro juvenil en la montaña este fin de semana. Traer ropa abrigadora y Biblia.",
-                date: "2023-10-15"
+                date: "2023-10-15",
+                author: "Pastor Juan",
+                authorId: "pastor_juan"
             },
             {
                 id: 2,
@@ -489,7 +673,9 @@
                 time: "09:30",
                 title: "Estudio de la Lección 5",
                 description: "Estudio de la lección de esta semana en el salón principal. Todos invitados.",
-                date: "2023-10-20"
+                date: "2023-10-20",
+                author: "Maestra María",
+                authorId: "maria_maestra"
             },
             {
                 id: 3,
@@ -497,7 +683,9 @@
                 time: "15:00",
                 title: "Reunión de Oración",
                 description: "Reunión de oración especial por las familias de la congregación.",
-                date: "2023-10-18"
+                date: "2023-10-18",
+                author: "Hermana Luisa",
+                authorId: "luisa_hermana"
             }
         ];
 
@@ -511,6 +699,9 @@
         let announcements = [];
         let isAdminLoggedIn = false;
         let nextId = 4;
+        let isEditing = false;
+        let currentEditId = null;
+        let currentUser = null;
 
         // Elementos del DOM
         const loginBtn = document.getElementById('loginBtn');
@@ -527,9 +718,34 @@
         const formMessage = document.getElementById('formMessage');
         const emptyMessage = document.getElementById('emptyMessage');
         const adminEmptyMessage = document.getElementById('adminEmptyMessage');
+        const editPanel = document.getElementById('editPanel');
+        const closeEditBtn = document.getElementById('closeEditBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editAnnouncementForm = document.getElementById('editAnnouncementForm');
+        const editIdInput = document.getElementById('editId');
+        const editAuthorInput = document.getElementById('editAuthor');
+        const editAuthorDisplayInput = document.getElementById('editAuthorDisplay');
+        const editCategoryInput = document.getElementById('editCategory');
+        const editTimeInput = document.getElementById('editTime');
+        const editTitleInput = document.getElementById('editTitle');
+        const editDateInput = document.getElementById('editDate');
+        const editDescriptionInput = document.getElementById('editDescription');
 
         // Inicializar la aplicación
         function initApp() {
+            // Establecer fecha mínima en los campos de fecha
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+            document.getElementById('editDate').min = today;
+            
+            // Generar un ID único para el usuario actual (si no existe)
+            if (!localStorage.getItem('currentUserId')) {
+                const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('currentUserId', userId);
+            }
+            
+            currentUser = localStorage.getItem('currentUserId');
+            
             // Cargar anuncios desde localStorage o usar datos iniciales
             const savedAnnouncements = localStorage.getItem('churchAnnouncements');
             
@@ -590,6 +806,20 @@
             
             // Filtrar anuncios por categoría
             filterCategory.addEventListener('change', renderAnnouncements);
+            
+            // Cerrar panel de edición
+            closeEditBtn.addEventListener('click', closeEditPanel);
+            cancelEditBtn.addEventListener('click', closeEditPanel);
+            
+            // Enviar formulario de edición
+            editAnnouncementForm.addEventListener('submit', handleEditAnnouncement);
+            
+            // Cerrar panel de edición al hacer clic fuera
+            editPanel.addEventListener('click', (e) => {
+                if (e.target === editPanel) {
+                    closeEditPanel();
+                }
+            });
         }
 
         // Manejar login de administrador
@@ -605,6 +835,10 @@
                 loginForm.classList.remove('active');
                 usernameInput.value = '';
                 passwordInput.value = '';
+                
+                // Actualizar la visualización
+                renderAnnouncements();
+                renderAdminAnnouncements();
             } else {
                 showMessage('Credenciales incorrectas. Intenta nuevamente.', 'error');
             }
@@ -616,6 +850,9 @@
             localStorage.removeItem('adminSession');
             updateLoginUI();
             showMessage('Sesión de administrador cerrada.', 'success');
+            
+            // Actualizar la visualización
+            renderAnnouncements();
         }
 
         // Actualizar la UI según el estado de login
@@ -624,7 +861,6 @@
                 loginBtn.style.display = 'none';
                 logoutBtn.style.display = 'block';
                 adminPanel.classList.add('active');
-                renderAdminAnnouncements();
             } else {
                 loginBtn.style.display = 'block';
                 logoutBtn.style.display = 'none';
@@ -641,9 +877,11 @@
             const time = document.getElementById('time').value;
             const title = document.getElementById('title').value.trim();
             const description = document.getElementById('description').value.trim();
+            const date = document.getElementById('date').value;
+            const author = document.getElementById('author').value.trim();
             
             // Validar campos
-            if (!category || !time || !title || !description) {
+            if (!category || !time || !title || !description || !date || !author) {
                 showMessage('Por favor completa todos los campos.', 'error');
                 return;
             }
@@ -655,7 +893,9 @@
                 time,
                 title,
                 description,
-                date: new Date().toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
+                date: date,
+                author: author,
+                authorId: currentUser // Guardar el ID del usuario que creó el anuncio
             };
             
             // Agregar al array de anuncios
@@ -664,8 +904,13 @@
             // Guardar en localStorage
             saveAnnouncements();
             
-            // Limpiar formulario
-            announcementForm.reset();
+            // Limpiar formulario (excepto el nombre del autor)
+            document.getElementById('category').value = '';
+            document.getElementById('time').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('description').value = '';
+            // El campo de autor se mantiene para facilitar la creación de múltiples anuncios
             
             // Mostrar mensaje de éxito
             showMessage('Anuncio publicado exitosamente.', 'success');
@@ -675,6 +920,129 @@
             
             // Si el admin está logueado, actualizar su vista también
             if (isAdminLoggedIn) {
+                renderAdminAnnouncements();
+            }
+        }
+
+        // Manejar edición de anuncio
+        function handleEditAnnouncement(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const id = parseInt(editIdInput.value);
+            const category = editCategoryInput.value;
+            const time = editTimeInput.value;
+            const title = editTitleInput.value.trim();
+            const description = editDescriptionInput.value.trim();
+            const date = editDateInput.value;
+            const author = editAuthorInput.value;
+            
+            // Validar campos
+            if (!category || !time || !title || !description || !date) {
+                showMessage('Por favor completa todos los campos.', 'error');
+                return;
+            }
+            
+            // Buscar el anuncio a editar
+            const index = announcements.findIndex(ann => ann.id === id);
+            
+            if (index !== -1) {
+                // Verificar permisos: solo el autor o el admin pueden editar
+                const announcement = announcements[index];
+                if (announcement.authorId !== currentUser && !isAdminLoggedIn) {
+                    showMessage('No tienes permiso para editar este anuncio.', 'error');
+                    closeEditPanel();
+                    return;
+                }
+                
+                // Actualizar el anuncio
+                announcements[index] = {
+                    ...announcement,
+                    category,
+                    time,
+                    title,
+                    description,
+                    date
+                    // El autor y authorId se mantienen
+                };
+                
+                // Guardar en localStorage
+                saveAnnouncements();
+                
+                // Cerrar panel de edición
+                closeEditPanel();
+                
+                // Mostrar mensaje de éxito
+                showMessage('Anuncio actualizado exitosamente.', 'success');
+                
+                // Actualizar la visualización
+                renderAnnouncements();
+                renderAdminAnnouncements();
+            }
+        }
+
+        // Abrir panel de edición para un anuncio específico
+        function openEditPanel(id) {
+            // Buscar el anuncio
+            const announcement = announcements.find(ann => ann.id === id);
+            
+            if (announcement) {
+                // Verificar permisos: solo el autor o el admin pueden editar
+                if (announcement.authorId !== currentUser && !isAdminLoggedIn) {
+                    showMessage('Solo el autor o el administrador pueden editar este anuncio.', 'error');
+                    return;
+                }
+                
+                // Llenar el formulario con los datos del anuncio
+                editIdInput.value = announcement.id;
+                editAuthorInput.value = announcement.author;
+                editAuthorDisplayInput.value = announcement.author;
+                editCategoryInput.value = announcement.category;
+                editTimeInput.value = announcement.time;
+                editTitleInput.value = announcement.title;
+                editDateInput.value = announcement.date;
+                editDescriptionInput.value = announcement.description;
+                
+                // Mostrar el panel de edición
+                editPanel.classList.add('active');
+                isEditing = true;
+                currentEditId = id;
+            }
+        }
+
+        // Cerrar panel de edición
+        function closeEditPanel() {
+            editPanel.classList.remove('active');
+            isEditing = false;
+            currentEditId = null;
+            editAnnouncementForm.reset();
+        }
+
+        // Eliminar un anuncio
+        function deleteAnnouncement(id) {
+            // Buscar el anuncio
+            const announcement = announcements.find(ann => ann.id === id);
+            
+            if (!announcement) return;
+            
+            // Verificar permisos: solo el autor o el admin pueden eliminar
+            if (announcement.authorId !== currentUser && !isAdminLoggedIn) {
+                showMessage('Solo el autor o el administrador pueden eliminar este anuncio.', 'error');
+                return;
+            }
+            
+            if (confirm('¿Estás seguro de que quieres eliminar este anuncio?')) {
+                // Filtrar el anuncio a eliminar
+                announcements = announcements.filter(ann => ann.id !== id);
+                
+                // Guardar en localStorage
+                saveAnnouncements();
+                
+                // Mostrar mensaje de éxito
+                showMessage('Anuncio eliminado exitosamente.', 'success');
+                
+                // Actualizar la visualización
+                renderAnnouncements();
                 renderAdminAnnouncements();
             }
         }
@@ -708,22 +1076,39 @@
             // Generar HTML de los anuncios
             let announcementsHTML = '';
             
-            // Ordenar por fecha (más reciente primero)
+            // Ordenar por fecha (más cercana primero)
             const sortedAnnouncements = [...filteredAnnouncements].sort((a, b) => {
-                return new Date(b.date) - new Date(a.date);
+                return new Date(a.date) - new Date(b.date);
             });
             
             sortedAnnouncements.forEach(announcement => {
+                const isMine = announcement.authorId === currentUser;
+                const canEdit = isMine || isAdminLoggedIn;
+                
                 announcementsHTML += `
-                    <div class="announcement-card">
+                    <div class="announcement-card ${isMine ? 'mine' : ''}">
+                        ${canEdit ? `
+                        <div class="announcement-actions">
+                            <button class="action-btn edit-btn" onclick="openEditPanel(${announcement.id})">
+                                ✏️
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteAnnouncement(${announcement.id})">
+                                🗑️
+                            </button>
+                        </div>
+                        ` : ''}
                         <h3>${announcement.title}</h3>
+                        <div class="announcement-category">${announcement.category}</div>
                         <div class="announcement-meta">
                             <span><strong>Hora:</strong> ${announcement.time}</span>
                             <span><strong>Fecha:</strong> ${announcement.date}</span>
                         </div>
-                        <div class="announcement-category">${announcement.category}</div>
                         <div class="announcement-description">
                             ${announcement.description}
+                        </div>
+                        <div class="announcement-author">
+                            <strong>Publicado por:</strong> ${announcement.author}
+                            ${isMine ? ' <em>(Tú)</em>' : ''}
                         </div>
                     </div>
                 `;
@@ -748,23 +1133,35 @@
             // Generar HTML de los anuncios
             let adminAnnouncementsHTML = '';
             
-            // Ordenar por fecha (más reciente primero)
+            // Ordenar por fecha (más cercana primero)
             const sortedAnnouncements = [...announcements].sort((a, b) => {
-                return new Date(b.date) - new Date(a.date);
+                return new Date(a.date) - new Date(b.date);
             });
             
             sortedAnnouncements.forEach(announcement => {
                 adminAnnouncementsHTML += `
-                    <div class="announcement-card">
+                    <div class="announcement-card ${announcement.authorId === currentUser ? 'mine' : ''}">
+                        <div class="announcement-actions">
+                            <button class="action-btn edit-btn" onclick="openEditPanel(${announcement.id})">
+                                ✏️
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteAnnouncement(${announcement.id})">
+                                🗑️
+                            </button>
+                        </div>
                         <h3>${announcement.title}</h3>
+                        <div class="announcement-category">${announcement.category}</div>
                         <div class="announcement-meta">
                             <span><strong>Hora:</strong> ${announcement.time}</span>
                             <span><strong>Fecha:</strong> ${announcement.date}</span>
                             <span><strong>ID:</strong> ${announcement.id}</span>
                         </div>
-                        <div class="announcement-category">${announcement.category}</div>
                         <div class="announcement-description">
                             ${announcement.description}
+                        </div>
+                        <div class="announcement-author">
+                            <strong>Publicado por:</strong> ${announcement.author} 
+                            <span style="font-size: 0.8rem; color: #666;">(ID: ${announcement.authorId})</span>
                         </div>
                     </div>
                 `;
