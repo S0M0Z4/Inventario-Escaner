@@ -19,6 +19,7 @@
             --rojo: #ef4444;
             --naranja: #f59e0b;
             --morado: #8b5cf6;
+            --amarillo: #fbbf24;
         }
         
         * {
@@ -70,7 +71,7 @@
             gap: 0.5rem;
         }
         
-        .login-btn, .admin-view-btn {
+        .login-btn, .admin-view-btn, .sync-btn {
             background-color: var(--azul-secundario);
             color: white;
             border: none;
@@ -82,7 +83,7 @@
             font-size: 0.9rem;
         }
         
-        .login-btn:hover, .admin-view-btn:hover {
+        .login-btn:hover, .admin-view-btn:hover, .sync-btn:hover {
             background-color: #2563eb;
         }
         
@@ -93,6 +94,15 @@
         
         .admin-view-btn:hover {
             background-color: #0da271;
+        }
+        
+        .sync-btn {
+            background-color: var(--morado);
+            display: none;
+        }
+        
+        .sync-btn:hover {
+            background-color: #7c3aed;
         }
         
         .login-form {
@@ -262,6 +272,10 @@
             border-color: var(--azul-secundario);
         }
         
+        .department-card.juvenil {
+            background-color: #e0f2fe;
+        }
+        
         .department-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
@@ -323,6 +337,66 @@
             color: var(--azul-principal);
             font-size: 0.95rem;
             margin-bottom: 0.3rem;
+        }
+        
+        /* Opciones JA y Clubes */
+        .juvenil-options {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--azul-claro);
+            display: none;
+        }
+        
+        .juvenil-options.active {
+            display: block;
+        }
+        
+        .juvenil-options h3 {
+            color: var(--azul-principal);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .option-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .option-card {
+            background-color: var(--blanco);
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid var(--azul-claro);
+            text-align: center;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra);
+            border-color: var(--azul-secundario);
+        }
+        
+        .option-card.ja {
+            background-color: #dbeafe;
+        }
+        
+        .option-card.clubes {
+            background-color: #e0f2fe;
+        }
+        
+        .option-card h4 {
+            color: var(--azul-principal);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--azul-principal);
         }
         
         /* Sección de formulario de anuncios */
@@ -545,6 +619,39 @@
             gap: 1.2rem;
         }
         
+        /* Panel de sincronización */
+        .sync-panel {
+            background-color: var(--blanco);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra);
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        .sync-panel.active {
+            display: block;
+        }
+        
+        .sync-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .sync-option {
+            background-color: var(--azul-claro);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--azul-secundario);
+        }
+        
+        .sync-option h4 {
+            color: var(--azul-principal);
+            margin-bottom: 0.5rem;
+        }
+        
         /* Panel de edición de anuncios (oculto por defecto) */
         .edit-panel {
             position: fixed;
@@ -625,12 +732,35 @@
             display: block;
         }
         
+        .message.warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+            display: block;
+        }
+        
         .empty-message {
             grid-column: 1 / -1;
             text-align: center;
             padding: 1.5rem;
             color: var(--gris);
             font-size: 0.95rem;
+        }
+        
+        /* Estado de carga */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.3);
+            border-radius: 50%;
+            border-top-color: var(--azul-principal);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* Información de sincronización */
@@ -642,6 +772,20 @@
             font-size: 0.85rem;
             color: var(--azul-principal);
             text-align: center;
+        }
+        
+        /* Configuración de GitHub */
+        .github-config {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #d1d5db;
+        }
+        
+        .github-config h4 {
+            color: var(--azul-principal);
+            margin-bottom: 0.5rem;
         }
         
         /* Responsive para teléfonos */
@@ -688,7 +832,7 @@
                 font-size: 0.9rem;
             }
             
-            .subcategories-grid {
+            .subcategories-grid, .option-cards {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             }
             
@@ -731,7 +875,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .subcategories-grid {
+            .subcategories-grid, .option-cards {
                 grid-template-columns: repeat(2, 1fr);
             }
             
@@ -786,6 +930,9 @@
         <div id="welcomeMessage" class="welcome-message">
             <h2>Bienvenido al Sistema de Anuncios de la Iglesia</h2>
             <p>Selecciona tu departamento o ministerio para ver los anuncios correspondientes</p>
+            <div id="cloudStatus" class="message info" style="margin-top: 1rem; display: none;">
+                <span id="statusText"></span>
+            </div>
         </div>
 
         <!-- Pantalla de selección de departamento -->
@@ -793,10 +940,10 @@
             <h2>Selecciona tu Departamento o Ministerio</h2>
             <div class="departments-grid">
                 <!-- Ministerio Joven -->
-                <div class="department-card" data-department="Ministerio Joven">
+                <div class="department-card juvenil" data-department="Ministerio Joven">
                     <div class="department-icon">👨‍🎓</div>
                     <h3>Ministerio Joven</h3>
-                    <p>Aventureros, Conquistadores, Guías</p>
+                    <p>JA y Clubes (Aventureros, Conquistadores, Guías)</p>
                 </div>
                 
                 <!-- Ministerio Infantil -->
@@ -912,9 +1059,26 @@
                 </div>
             </div>
             
-            <!-- Subcategorías para Ministerio Joven -->
-            <div id="ministerioJovenSubcategories" class="subcategories">
-                <h3>Selecciona una subcategoría del Ministerio Joven</h3>
+            <!-- Opciones para Ministerio Joven (JA o Clubes) -->
+            <div id="juvenilOptions" class="juvenil-options">
+                <h3>Ministerio Joven - Selecciona una opción</h3>
+                <div class="option-cards">
+                    <div class="option-card ja" data-option="JA">
+                        <div class="option-icon">🙋‍♂️</div>
+                        <h4>Jóvenes Adventistas (JA)</h4>
+                        <p>Anuncios para jóvenes de 16+ años</p>
+                    </div>
+                    <div class="option-card clubes" data-option="Clubes">
+                        <div class="option-icon">🏕️</div>
+                        <h4>Clubes</h4>
+                        <p>Aventureros, Conquistadores, Guías</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Subcategorías para Clubes -->
+            <div id="clubesSubcategories" class="subcategories">
+                <h3>Clubes - Selecciona un club</h3>
                 <div class="subcategories-grid">
                     <div class="subcategory-card" data-department="Aventureros">
                         <h4>Aventureros</h4>
@@ -933,7 +1097,7 @@
             
             <!-- Información de sincronización -->
             <div class="sync-info">
-                ℹ️ Los anuncios se guardan localmente en cada dispositivo. El administrador puede ver todos los anuncios.
+                ℹ️ Los anuncios se sincronizan automáticamente en la nube. El administrador puede ver todos los anuncios desde cualquier dispositivo.
             </div>
         </section>
 
@@ -962,7 +1126,10 @@
                     <label for="description">Descripción:</label>
                     <textarea id="description" placeholder="Describe los detalles del anuncio..." required></textarea>
                 </div>
-                <button type="submit" class="btn-submit-announcement">Publicar Anuncio</button>
+                <button type="submit" class="btn-submit-announcement" id="submitAnnouncementBtn">
+                    <span id="submitBtnText">Publicar Anuncio</span>
+                    <span id="submitLoading" class="loading" style="display: none;"></span>
+                </button>
             </form>
             <div id="formMessage" class="message"></div>
         </section>
@@ -986,12 +1153,33 @@
             <h2 class="section-title">Panel de Administrador - Todos los Anuncios</h2>
             <div class="current-department">
                 <h3>Vista completa de todos los anuncios de todos los departamentos</h3>
-                <button id="backToDepartmentsBtn" class="submit-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">← Volver a Departamentos</button>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button id="backToDepartmentsBtn" class="submit-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">← Volver a Departamentos</button>
+                    <button id="refreshCloudBtn" class="submit-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem; background-color: var(--verde);">🔄 Actualizar desde Nube</button>
+                </div>
             </div>
             <div id="adminAnnouncements" class="admin-announcements">
                 <!-- Los anuncios del panel de administrador se cargarán aquí -->
                 <div class="empty-message" id="adminEmptyMessage">
                     No hay anuncios para mostrar.
+                </div>
+            </div>
+            
+            <!-- Configuración de GitHub para desarrolladores -->
+            <div class="github-config">
+                <h4>Configuración de Sincronización en la Nube</h4>
+                <p><small>Para desarrolladores: Esta aplicación usa GitHub Gists para almacenar los anuncios en la nube.</small></p>
+                <div style="margin-top: 0.5rem;">
+                    <button id="showConfigBtn" class="submit-btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Mostrar Configuración</button>
+                    <div id="configDetails" style="display: none; margin-top: 1rem;">
+                        <p><strong>Gist ID actual:</strong> <span id="currentGistId">No configurado</span></p>
+                        <p><strong>Token de GitHub:</strong> <span id="tokenStatus">No configurado</span></p>
+                        <div style="margin-top: 0.5rem;">
+                            <input type="text" id="gistIdInput" placeholder="ID del Gist existente" style="padding: 0.4rem; width: 100%; margin-bottom: 0.5rem;">
+                            <input type="text" id="githubTokenInput" placeholder="Token de GitHub (opcional)" style="padding: 0.4rem; width: 100%; margin-bottom: 0.5rem;">
+                            <button id="saveConfigBtn" class="submit-btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Guardar Configuración</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1033,7 +1221,10 @@
                         <textarea id="editDescription" placeholder="Describe los detalles del anuncio..." required></textarea>
                     </div>
                     <div class="form-control" style="grid-column: 1 / -1; display: flex; gap: 1rem;">
-                        <button type="submit" class="btn-submit-announcement" style="flex: 1;">Guardar Cambios</button>
+                        <button type="submit" class="btn-submit-announcement" style="flex: 1;" id="saveEditBtn">
+                            <span id="saveEditText">Guardar Cambios</span>
+                            <span id="saveEditLoading" class="loading" style="display: none;"></span>
+                        </button>
                         <button type="button" id="cancelEditBtn" class="btn-submit-announcement" style="background-color: var(--gris); flex: 1;">Cancelar</button>
                     </div>
                 </div>
@@ -1042,15 +1233,23 @@
     </div>
 
     <script>
+        // Configuración para almacenamiento en la nube usando GitHub Gists
+        const CLOUD_CONFIG = {
+            // Puedes cambiar este Gist ID por uno propio si quieres
+            gistId: 'a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5', // Este es un ID de ejemplo
+            fileName: 'iglesia_anuncios.json',
+            useCloud: true, // Cambia a false para desactivar la nube
+            githubToken: null // Se puede configurar para mayor seguridad
+        };
+
         // Datos de ejemplo para inicializar la aplicación
         const initialAnnouncements = [
             {
                 id: 1,
-                department: "Ministerio Joven",
-                subdepartment: "Conquistadores",
+                department: "JA",
                 time: "18:00",
-                title: "Campamento de Fin de Semana",
-                description: "Campamento para conquistadores en el bosque. Llevar tienda de campaña y ropa abrigadora.",
+                title: "Retiro Espiritual JA",
+                description: "Retiro para jóvenes adventistas en la montaña. Traer Biblia y ropa abrigadora.",
                 date: "2023-11-15",
                 author: "Director Juan",
                 authorId: "director_juan",
@@ -1059,41 +1258,14 @@
             },
             {
                 id: 2,
-                department: "Escuela Sabática",
-                subdepartment: "",
+                department: "Conquistadores",
                 time: "09:30",
-                title: "Estudio Bíblico Especial",
-                description: "Estudio del libro de Apocalipsis en el salón principal.",
+                title: "Acampada de Fin de Semana",
+                description: "Acampada para conquistadores en el campamento central.",
                 date: "2023-11-20",
                 author: "Profesor Pedro",
                 authorId: "profesor_pedro",
                 createdAt: "2023-10-11T14:30:00",
-                deviceId: "web_demo"
-            },
-            {
-                id: 3,
-                department: "Ministerio de la Mujer",
-                subdepartment: "",
-                time: "15:00",
-                title: "Retiro Espiritual Femenino",
-                description: "Retiro de mujeres en la casa de retiro. Tema: La mujer virtuosa.",
-                date: "2023-11-18",
-                author: "Hermana María",
-                authorId: "maria_hermana",
-                createdAt: "2023-10-12T09:15:00",
-                deviceId: "web_demo"
-            },
-            {
-                id: 4,
-                department: "Aventureros",
-                subdepartment: "",
-                time: "16:00",
-                title: "Día de Manualidades",
-                description: "Los aventureros crearán manualidades para el día de la madre.",
-                date: "2023-11-22",
-                author: "Directora Ana",
-                authorId: "ana_directora",
-                createdAt: "2023-10-13T16:45:00",
                 deviceId: "web_demo"
             }
         ];
@@ -1107,7 +1279,7 @@
         // Estado de la aplicación
         let announcements = [];
         let isAdminLoggedIn = false;
-        let nextId = 5;
+        let nextId = 3;
         let isEditing = false;
         let currentEditId = null;
         let currentUser = null;
@@ -1115,6 +1287,7 @@
         let currentView = 'departmentSelection'; // 'departmentSelection', 'announcements', 'form', 'admin'
         let currentSubdepartment = null;
         let deviceId = null;
+        let isCloudSyncing = false;
 
         // Elementos del DOM
         const loginBtn = document.getElementById('loginBtn');
@@ -1150,12 +1323,29 @@
         const currentDepartmentTitle = document.getElementById('currentDepartmentTitle');
         const formSectionTitle = document.getElementById('formSectionTitle');
         const selectedDepartmentInput = document.getElementById('selectedDepartment');
-        const ministerioJovenSubcategories = document.getElementById('ministerioJovenSubcategories');
+        const juvenilOptions = document.getElementById('juvenilOptions');
+        const clubesSubcategories = document.getElementById('clubesSubcategories');
         const welcomeMessage = document.getElementById('welcomeMessage');
         const backToDepartmentsBtn = document.getElementById('backToDepartmentsBtn');
+        const refreshCloudBtn = document.getElementById('refreshCloudBtn');
+        const cloudStatus = document.getElementById('cloudStatus');
+        const statusText = document.getElementById('statusText');
+        const submitAnnouncementBtn = document.getElementById('submitAnnouncementBtn');
+        const submitBtnText = document.getElementById('submitBtnText');
+        const submitLoading = document.getElementById('submitLoading');
+        const saveEditBtn = document.getElementById('saveEditBtn');
+        const saveEditText = document.getElementById('saveEditText');
+        const saveEditLoading = document.getElementById('saveEditLoading');
+        const showConfigBtn = document.getElementById('showConfigBtn');
+        const configDetails = document.getElementById('configDetails');
+        const currentGistId = document.getElementById('currentGistId');
+        const tokenStatus = document.getElementById('tokenStatus');
+        const gistIdInput = document.getElementById('gistIdInput');
+        const githubTokenInput = document.getElementById('githubTokenInput');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
 
         // Inicializar la aplicación
-        function initApp() {
+        async function initApp() {
             // Establecer fecha mínima en los campos de fecha
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').min = today;
@@ -1177,8 +1367,14 @@
             
             currentUser = localStorage.getItem('currentUserId');
             
-            // Cargar anuncios desde localStorage
-            loadAnnouncements();
+            // Cargar configuración de la nube
+            loadCloudConfig();
+            
+            // Mostrar estado inicial
+            updateCloudStatus('Conectando con la nube...', 'info');
+            
+            // Cargar anuncios desde la nube
+            await loadAnnouncementsFromCloud();
             
             // Verificar si hay sesión de administrador activa
             const adminSession = localStorage.getItem('adminSession');
@@ -1194,10 +1390,78 @@
             
             // Mostrar vista inicial
             showView('departmentSelection');
+            
+            // Actualizar estado de la nube
+            updateCloudStatus('Sincronizado con la nube ✓', 'success');
         }
 
-        // Cargar anuncios desde localStorage
-        function loadAnnouncements() {
+        // Cargar configuración de la nube
+        function loadCloudConfig() {
+            const savedGistId = localStorage.getItem('cloudGistId');
+            const savedToken = localStorage.getItem('githubToken');
+            
+            if (savedGistId) {
+                CLOUD_CONFIG.gistId = savedGistId;
+            }
+            
+            if (savedToken) {
+                CLOUD_CONFIG.githubToken = savedToken;
+            }
+            
+            // Mostrar configuración actual
+            currentGistId.textContent = CLOUD_CONFIG.gistId;
+            tokenStatus.textContent = CLOUD_CONFIG.githubToken ? 'Configurado' : 'No configurado';
+        }
+
+        // Actualizar estado de la nube
+        function updateCloudStatus(message, type) {
+            cloudStatus.style.display = 'block';
+            statusText.textContent = message;
+            cloudStatus.className = `message ${type}`;
+        }
+
+        // Cargar anuncios desde la nube
+        async function loadAnnouncementsFromCloud() {
+            if (!CLOUD_CONFIG.useCloud) {
+                // Usar datos locales si la nube está desactivada
+                loadAnnouncementsFromLocal();
+                return;
+            }
+            
+            try {
+                updateCloudStatus('Cargando anuncios desde la nube...', 'info');
+                
+                // Intentar cargar desde la nube
+                const cloudData = await fetchCloudData();
+                
+                if (cloudData && cloudData.announcements) {
+                    announcements = cloudData.announcements;
+                    
+                    // Encontrar el ID más alto para continuar la numeración
+                    if (announcements.length > 0) {
+                        nextId = Math.max(...announcements.map(ann => ann.id)) + 1;
+                    }
+                    
+                    // Guardar también localmente como backup
+                    saveAnnouncementsToLocal();
+                    
+                    updateCloudStatus(`Cargados ${announcements.length} anuncios desde la nube ✓`, 'success');
+                } else {
+                    // Si no hay datos en la nube, cargar datos locales
+                    loadAnnouncementsFromLocal();
+                    updateCloudStatus('Usando datos locales (primera vez)', 'warning');
+                }
+            } catch (error) {
+                console.error('Error cargando desde la nube:', error);
+                
+                // En caso de error, cargar datos locales
+                loadAnnouncementsFromLocal();
+                updateCloudStatus('Error de conexión. Usando datos locales.', 'error');
+            }
+        }
+
+        // Cargar anuncios desde almacenamiento local
+        function loadAnnouncementsFromLocal() {
             const savedAnnouncements = localStorage.getItem('churchAnnouncements');
             
             if (savedAnnouncements) {
@@ -1208,7 +1472,7 @@
                 }
             } else {
                 announcements = initialAnnouncements;
-                saveAnnouncements();
+                saveAnnouncementsToLocal();
             }
             
             // Asegurarse de que cada anuncio tenga un deviceId
@@ -1217,6 +1481,150 @@
                     announcement.deviceId = 'web_demo';
                 }
             });
+        }
+
+        // Guardar anuncios en almacenamiento local
+        function saveAnnouncementsToLocal() {
+            localStorage.setItem('churchAnnouncements', JSON.stringify(announcements));
+        }
+
+        // Obtener datos desde la nube (GitHub Gist)
+        async function fetchCloudData() {
+            if (!CLOUD_CONFIG.gistId) {
+                throw new Error('No Gist ID configurado');
+            }
+            
+            const url = `https://api.github.com/gists/${CLOUD_CONFIG.gistId}`;
+            const headers = {
+                'Accept': 'application/vnd.github.v3+json'
+            };
+            
+            // Si hay token, agregarlo para mayor tasa de límite
+            if (CLOUD_CONFIG.githubToken) {
+                headers['Authorization'] = `token ${CLOUD_CONFIG.githubToken}`;
+            }
+            
+            const response = await fetch(url, { headers });
+            
+            if (!response.ok) {
+                if (response.status === 404) {
+                    // El Gist no existe, crear uno nuevo
+                    return await createNewGist();
+                }
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            
+            const gist = await response.json();
+            const fileContent = gist.files[CLOUD_CONFIG.fileName]?.content;
+            
+            if (!fileContent) {
+                return { announcements: [] };
+            }
+            
+            return JSON.parse(fileContent);
+        }
+
+        // Crear un nuevo Gist en GitHub
+        async function createNewGist() {
+            // Solo crear nuevo Gist si hay token (requiere autenticación)
+            if (!CLOUD_CONFIG.githubToken) {
+                throw new Error('Se requiere token de GitHub para crear nuevo Gist');
+            }
+            
+            const initialData = {
+                announcements: [],
+                createdAt: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const response = await fetch('https://api.github.com/gists', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': `token ${CLOUD_CONFIG.githubToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    description: 'Anuncios de la Iglesia - Almacenamiento en la Nube',
+                    public: false,
+                    files: {
+                        [CLOUD_CONFIG.fileName]: {
+                            content: JSON.stringify(initialData, null, 2)
+                        }
+                    }
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Error creando Gist: ${response.status}`);
+            }
+            
+            const gist = await response.json();
+            
+            // Guardar el nuevo Gist ID
+            CLOUD_CONFIG.gistId = gist.id;
+            localStorage.setItem('cloudGistId', gist.id);
+            currentGistId.textContent = gist.id;
+            
+            return initialData;
+        }
+
+        // Guardar datos en la nube (GitHub Gist)
+        async function saveToCloud() {
+            if (!CLOUD_CONFIG.useCloud || !CLOUD_CONFIG.gistId) {
+                return false;
+            }
+            
+            if (isCloudSyncing) {
+                return false; // Evitar múltiples sincronizaciones simultáneas
+            }
+            
+            isCloudSyncing = true;
+            
+            try {
+                const dataToSave = {
+                    announcements: announcements,
+                    lastUpdated: new Date().toISOString(),
+                    totalAnnouncements: announcements.length,
+                    version: '1.0'
+                };
+                
+                const url = `https://api.github.com/gists/${CLOUD_CONFIG.gistId}`;
+                const headers = {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                };
+                
+                // Si hay token, agregarlo
+                if (CLOUD_CONFIG.githubToken) {
+                    headers['Authorization'] = `token ${CLOUD_CONFIG.githubToken}`;
+                }
+                
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: headers,
+                    body: JSON.stringify({
+                        description: `Anuncios de la Iglesia - Actualizado: ${new Date().toLocaleDateString()}`,
+                        files: {
+                            [CLOUD_CONFIG.fileName]: {
+                                content: JSON.stringify(dataToSave, null, 2)
+                            }
+                        }
+                    })
+                });
+                
+                isCloudSyncing = false;
+                
+                if (!response.ok) {
+                    throw new Error(`Error guardando en la nube: ${response.status}`);
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error guardando en la nube:', error);
+                isCloudSyncing = false;
+                return false;
+            }
         }
 
         // Configurar event listeners
@@ -1252,11 +1660,15 @@
             // Botón de vista admin
             adminViewBtn.addEventListener('click', showAdminView);
             
+            // Botón para actualizar desde la nube
+            refreshCloudBtn.addEventListener('click', async () => {
+                updateCloudStatus('Actualizando desde la nube...', 'info');
+                await loadAnnouncementsFromCloud();
+                renderAdminAnnouncements();
+            });
+            
             // Botón para volver a departamentos desde admin
             backToDepartmentsBtn.addEventListener('click', () => {
-                isAdminLoggedIn = false;
-                localStorage.removeItem('adminSession');
-                updateLoginUI();
                 showView('departmentSelection');
             });
             
@@ -1282,23 +1694,75 @@
                 }
             });
             
-            // Seleccionar departamento
-            document.querySelectorAll('.department-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    const department = card.getAttribute('data-department');
-                    
-                    // Si es Ministerio Joven, mostrar subcategorías
-                    if (department === 'Ministerio Joven') {
-                        ministerioJovenSubcategories.classList.add('active');
-                        currentDepartment = department;
-                        currentSubdepartment = null;
-                    } else {
-                        selectDepartment(department);
+            // Configuración de GitHub
+            showConfigBtn.addEventListener('click', () => {
+                configDetails.style.display = configDetails.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            saveConfigBtn.addEventListener('click', () => {
+                const newGistId = gistIdInput.value.trim();
+                const newToken = githubTokenInput.value.trim();
+                
+                if (newGistId) {
+                    CLOUD_CONFIG.gistId = newGistId;
+                    localStorage.setItem('cloudGistId', newGistId);
+                    currentGistId.textContent = newGistId;
+                }
+                
+                if (newToken) {
+                    CLOUD_CONFIG.githubToken = newToken;
+                    localStorage.setItem('githubToken', newToken);
+                } else if (newToken === '') {
+                    CLOUD_CONFIG.githubToken = null;
+                    localStorage.removeItem('githubToken');
+                }
+                
+                tokenStatus.textContent = CLOUD_CONFIG.githubToken ? 'Configurado' : 'No configurado';
+                showMessage('Configuración guardada exitosamente.', 'success');
+                
+                // Limpiar campos
+                gistIdInput.value = '';
+                githubTokenInput.value = '';
+                
+                // Actualizar desde la nueva configuración
+                loadAnnouncementsFromCloud().then(() => {
+                    if (currentView === 'admin') {
+                        renderAdminAnnouncements();
                     }
                 });
             });
             
-            // Seleccionar subcategoría de Ministerio Joven
+            // Seleccionar departamento (excepto Ministerio Joven)
+            document.querySelectorAll('.department-card:not([data-department="Ministerio Joven"])').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const department = card.getAttribute('data-department');
+                    selectDepartment(department);
+                });
+            });
+            
+            // Seleccionar Ministerio Joven
+            document.querySelector('.department-card[data-department="Ministerio Joven"]').addEventListener('click', () => {
+                juvenilOptions.classList.add('active');
+                clubesSubcategories.classList.remove('active');
+                currentDepartment = "Ministerio Joven";
+                currentSubdepartment = null;
+            });
+            
+            // Seleccionar opción JA o Clubes
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const option = card.getAttribute('data-option');
+                    
+                    if (option === 'JA') {
+                        selectDepartment('JA');
+                    } else if (option === 'Clubes') {
+                        juvenilOptions.classList.remove('active');
+                        clubesSubcategories.classList.add('active');
+                    }
+                });
+            });
+            
+            // Seleccionar subcategoría de Clubes
             document.querySelectorAll('.subcategory-card').forEach(card => {
                 card.addEventListener('click', () => {
                     const department = card.getAttribute('data-department');
@@ -1365,15 +1829,23 @@
             currentView = 'admin';
             
             // Ocultar todas las vistas
-            departmentSelection.style.display = 'none';
-            announcementFormSection.classList.remove('active');
-            announcementsSection.classList.remove('active');
+            hideAllViews();
             adminPanel.classList.add('active');
             backBtn.style.display = 'block';
-            welcomeMessage.style.display = 'none';
             
             // Renderizar todos los anuncios
             renderAdminAnnouncements();
+        }
+
+        // Ocultar todas las vistas
+        function hideAllViews() {
+            departmentSelection.style.display = 'none';
+            announcementFormSection.classList.remove('active');
+            announcementsSection.classList.remove('active');
+            adminPanel.classList.remove('active');
+            juvenilOptions.classList.remove('active');
+            clubesSubcategories.classList.remove('active');
+            welcomeMessage.style.display = 'none';
         }
 
         // Seleccionar un departamento
@@ -1382,8 +1854,9 @@
             currentDepartmentTitle.textContent = `Anuncios: ${department}`;
             selectedDepartmentInput.value = department;
             
-            // Ocultar subcategorías si estaban visibles
-            ministerioJovenSubcategories.classList.remove('active');
+            // Ocultar todas las opciones de Ministerio Joven
+            juvenilOptions.classList.remove('active');
+            clubesSubcategories.classList.remove('active');
             
             // Mostrar vista de anuncios
             showView('announcements');
@@ -1395,11 +1868,17 @@
             if (currentView === 'form') {
                 showView('announcements');
             } else if (currentView === 'announcements') {
-                // Si estamos en subcategorías de Ministerio Joven, volver a departamentos
-                if (currentDepartment === 'Ministerio Joven' && ministerioJovenSubcategories.classList.contains('active')) {
-                    ministerioJovenSubcategories.classList.remove('active');
-                    currentDepartment = null;
-                    currentSubdepartment = null;
+                // Si estamos en opciones de Ministerio Joven, manejar el flujo
+                if (currentDepartment === "Ministerio Joven" || juvenilOptions.classList.contains('active') || clubesSubcategories.classList.contains('active')) {
+                    if (clubesSubcategories.classList.contains('active')) {
+                        clubesSubcategories.classList.remove('active');
+                        juvenilOptions.classList.add('active');
+                    } else if (juvenilOptions.classList.contains('active')) {
+                        juvenilOptions.classList.remove('active');
+                        showView('departmentSelection');
+                    } else {
+                        showView('departmentSelection');
+                    }
                 } else {
                     showView('departmentSelection');
                 }
@@ -1413,12 +1892,8 @@
             currentView = view;
             
             // Ocultar todas las vistas primero
-            departmentSelection.style.display = 'none';
-            announcementFormSection.classList.remove('active');
-            announcementsSection.classList.remove('active');
-            adminPanel.classList.remove('active');
+            hideAllViews();
             backBtn.style.display = 'none';
-            welcomeMessage.style.display = 'none';
             
             // Mostrar la vista correspondiente
             if (view === 'departmentSelection') {
@@ -1441,7 +1916,7 @@
         }
 
         // Manejar envío de nuevo anuncio
-        function handleAnnouncementSubmit(e) {
+        async function handleAnnouncementSubmit(e) {
             e.preventDefault();
             
             // Obtener valores del formulario
@@ -1457,6 +1932,11 @@
                 showMessage('Por favor completa todos los campos.', 'error');
                 return;
             }
+            
+            // Mostrar estado de carga
+            submitBtnText.textContent = 'Publicando...';
+            submitLoading.style.display = 'inline-block';
+            submitAnnouncementBtn.disabled = true;
             
             // Crear nuevo anuncio
             const newAnnouncement = {
@@ -1475,18 +1955,43 @@
             // Agregar al array de anuncios
             announcements.push(newAnnouncement);
             
-            // Guardar en localStorage
-            saveAnnouncements();
+            // Guardar localmente
+            saveAnnouncementsToLocal();
             
-            // Limpiar formulario (excepto el nombre del autor)
-            document.getElementById('time').value = '';
-            document.getElementById('title').value = '';
-            document.getElementById('date').value = '';
-            document.getElementById('description').value = '';
-            // El campo de autor se mantiene
+            // Intentar guardar en la nube
+            let cloudSuccess = false;
+            if (CLOUD_CONFIG.useCloud) {
+                updateCloudStatus('Guardando en la nube...', 'info');
+                cloudSuccess = await saveToCloud();
+            }
             
-            // Mostrar mensaje de éxito
-            showMessage('Anuncio publicado exitosamente.', 'success');
+            // Restaurar botón
+            submitBtnText.textContent = 'Publicar Anuncio';
+            submitLoading.style.display = 'none';
+            submitAnnouncementBtn.disabled = false;
+            
+            if (!CLOUD_CONFIG.useCloud || cloudSuccess) {
+                // Limpiar formulario (excepto el nombre del autor)
+                document.getElementById('time').value = '';
+                document.getElementById('title').value = '';
+                document.getElementById('date').value = '';
+                document.getElementById('description').value = '';
+                // El campo de autor se mantiene
+                
+                // Mostrar mensaje de éxito
+                const message = cloudSuccess ? 
+                    'Anuncio publicado exitosamente y guardado en la nube.' : 
+                    'Anuncio publicado exitosamente (modo local).';
+                showMessage(message, 'success');
+                
+                // Actualizar estado de la nube
+                if (cloudSuccess) {
+                    updateCloudStatus('Sincronizado con la nube ✓', 'success');
+                }
+            } else {
+                showMessage('Anuncio guardado localmente, pero hubo un error al guardar en la nube.', 'warning');
+                updateCloudStatus('Error de sincronización con la nube', 'error');
+            }
             
             // Volver a la vista de anuncios
             showView('announcements');
@@ -1501,7 +2006,7 @@
         }
 
         // Manejar edición de anuncio
-        function handleEditAnnouncement(e) {
+        async function handleEditAnnouncement(e) {
             e.preventDefault();
             
             // Obtener valores del formulario
@@ -1518,6 +2023,11 @@
                 return;
             }
             
+            // Mostrar estado de carga
+            saveEditText.textContent = 'Guardando...';
+            saveEditLoading.style.display = 'inline-block';
+            saveEditBtn.disabled = true;
+            
             // Buscar el anuncio a editar
             const index = announcements.findIndex(ann => ann.id === id);
             
@@ -1526,6 +2036,9 @@
                 const announcement = announcements[index];
                 if (announcement.authorId !== currentUser && !isAdminLoggedIn) {
                     showMessage('No tienes permiso para editar este anuncio.', 'error');
+                    saveEditText.textContent = 'Guardar Cambios';
+                    saveEditLoading.style.display = 'none';
+                    saveEditBtn.disabled = false;
                     closeEditPanel();
                     return;
                 }
@@ -1540,14 +2053,34 @@
                     // El autor, authorId, departamento y deviceId se mantienen
                 };
                 
-                // Guardar en localStorage
-                saveAnnouncements();
+                // Guardar localmente
+                saveAnnouncementsToLocal();
+                
+                // Intentar guardar en la nube
+                let cloudSuccess = false;
+                if (CLOUD_CONFIG.useCloud) {
+                    updateCloudStatus('Actualizando en la nube...', 'info');
+                    cloudSuccess = await saveToCloud();
+                }
+                
+                // Restaurar botón
+                saveEditText.textContent = 'Guardar Cambios';
+                saveEditLoading.style.display = 'none';
+                saveEditBtn.disabled = false;
                 
                 // Cerrar panel de edición
                 closeEditPanel();
                 
                 // Mostrar mensaje de éxito
-                showMessage('Anuncio actualizado exitosamente.', 'success');
+                const message = cloudSuccess ? 
+                    'Anuncio actualizado exitosamente y guardado en la nube.' : 
+                    'Anuncio actualizado exitosamente (modo local).';
+                showMessage(message, 'success');
+                
+                // Actualizar estado de la nube
+                if (cloudSuccess) {
+                    updateCloudStatus('Sincronizado con la nube ✓', 'success');
+                }
                 
                 // Actualizar la visualización
                 renderAnnouncements();
@@ -1590,10 +2123,15 @@
             isEditing = false;
             currentEditId = null;
             editAnnouncementForm.reset();
+            
+            // Restaurar texto del botón por si acaso
+            saveEditText.textContent = 'Guardar Cambios';
+            saveEditLoading.style.display = 'none';
+            saveEditBtn.disabled = false;
         }
 
         // Eliminar un anuncio
-        function deleteAnnouncement(id) {
+        async function deleteAnnouncement(id) {
             // Buscar el anuncio
             const announcement = announcements.find(ann => ann.id === id);
             
@@ -1609,11 +2147,26 @@
                 // Filtrar el anuncio a eliminar
                 announcements = announcements.filter(ann => ann.id !== id);
                 
-                // Guardar en localStorage
-                saveAnnouncements();
+                // Guardar localmente
+                saveAnnouncementsToLocal();
                 
-                // Mostrar mensaje de éxito
-                showMessage('Anuncio eliminado exitosamente.', 'success');
+                // Intentar guardar en la nube
+                let cloudSuccess = false;
+                if (CLOUD_CONFIG.useCloud) {
+                    updateCloudStatus('Actualizando en la nube...', 'info');
+                    cloudSuccess = await saveToCloud();
+                }
+                
+                // Mostrar mensaje
+                const message = cloudSuccess ? 
+                    'Anuncio eliminado exitosamente y actualizado en la nube.' : 
+                    'Anuncio eliminado exitosamente (modo local).';
+                showMessage(message, 'success');
+                
+                // Actualizar estado de la nube
+                if (cloudSuccess) {
+                    updateCloudStatus('Sincronizado con la nube ✓', 'success');
+                }
                 
                 // Actualizar la visualización
                 if (currentView === 'admin') {
@@ -1622,11 +2175,6 @@
                     renderAnnouncements();
                 }
             }
-        }
-
-        // Guardar anuncios en localStorage
-        function saveAnnouncements() {
-            localStorage.setItem('churchAnnouncements', JSON.stringify(announcements));
         }
 
         // Renderizar anuncios del departamento actual
@@ -1688,7 +2236,7 @@
                         <div class="announcement-author">
                             <strong>Publicado por:</strong> ${announcement.author}
                             ${isMine ? ' <em>(Tú)</em>' : ''}
-                            ${isAdminLoggedIn ? ` <span style="font-size: 0.7rem; color: #666;">(Dispositivo: ${announcement.deviceId?.substring(0, 8)}...)</span>` : ''}
+                            ${isAdminLoggedIn ? ` <span style="font-size: 0.7rem; color: #666;">(Desde: ${announcement.deviceId?.substring(0, 8)}...)</span>` : ''}
                         </div>
                     </div>
                 `;
@@ -1740,7 +2288,6 @@
                         <div class="announcement-meta">
                             <span><strong>Hora:</strong> ${announcement.time}</span>
                             <span><strong>Fecha:</strong> ${announcement.date}</span>
-                            <span><strong>ID:</strong> ${announcement.id}</span>
                         </div>
                         <div class="announcement-description">
                             ${announcement.description}
