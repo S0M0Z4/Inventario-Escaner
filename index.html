@@ -773,7 +773,7 @@
             border: 1px solid #fecaca;
         }
         
-        /* Responsive para teléfonos */
+        /* Responsive mejorado para teléfonos */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -781,8 +781,15 @@
                 padding: 0.8rem;
             }
             
+            .logo {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
             .logo h1 {
                 font-size: 1.2rem;
+                text-align: center;
             }
             
             .login-container {
@@ -806,15 +813,21 @@
             
             .department-card {
                 min-height: 100px;
-                padding: 0.8rem;
+                padding: 1rem 0.8rem;
             }
             
             .department-icon {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             
             .department-card h3 {
                 font-size: 0.9rem;
+                margin-bottom: 0.2rem;
+            }
+            
+            .department-card p {
+                font-size: 0.75rem;
+                line-height: 1.2;
             }
             
             .subcategories-grid, .option-cards {
@@ -823,6 +836,7 @@
             
             .announcement-form {
                 grid-template-columns: 1fr;
+                gap: 0.8rem;
             }
             
             .announcements-container, .admin-announcements {
@@ -832,21 +846,26 @@
             .announcement-card h3 {
                 padding-right: 0;
                 margin-bottom: 0.8rem;
+                font-size: 1rem;
             }
             
             .announcement-actions {
                 position: static;
                 margin-bottom: 0.8rem;
-                justify-content: flex-start;
+                justify-content: flex-end;
             }
             
             .current-department {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
+                gap: 0.8rem;
+                padding: 0.8rem;
             }
             
             .current-department h3 {
                 font-size: 1.1rem;
+                text-align: center;
+                width: 100%;
             }
             
             .container {
@@ -860,20 +879,57 @@
                 font-size: 0.7rem;
                 padding: 6px 10px;
             }
+            
+            .step-nav {
+                flex-direction: column;
+                gap: 0.8rem;
+                align-items: stretch;
+            }
+            
+            .step-title {
+                font-size: 1.1rem;
+                order: 2;
+            }
+            
+            .back-btn {
+                align-self: flex-start;
+                order: 1;
+            }
+            
+            .submit-btn {
+                order: 3;
+                margin-top: 0;
+            }
+            
+            .selection-screen {
+                padding: 1rem;
+            }
+            
+            .selection-screen h2 {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+            }
+            
+            .cloud-info {
+                font-size: 0.8rem;
+                padding: 0.6rem;
+            }
         }
         
         @media (max-width: 480px) {
             .departments-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
             }
             
             .subcategories-grid, .option-cards {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
             }
             
             .department-card {
                 min-height: 90px;
-                padding: 0.7rem;
+                padding: 0.8rem 0.6rem;
             }
             
             .logo h1 {
@@ -883,14 +939,61 @@
             .section-title {
                 font-size: 1.2rem;
             }
+            
+            .announcement-card {
+                padding: 1rem;
+            }
+            
+            .announcement-card h3 {
+                font-size: 0.95rem;
+            }
+            
+            .announcement-description {
+                font-size: 0.85rem;
+            }
+            
+            .welcome-message {
+                padding: 1rem;
+            }
+            
+            .welcome-message h2 {
+                font-size: 1.2rem;
+            }
+            
+            .welcome-message p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .departments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .subcategories-grid, .option-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .department-card {
+                min-height: 85px;
+            }
+            
+            .logo h1 {
+                font-size: 1rem;
+            }
+            
+            .login-btn, .logout-btn, .admin-view-btn, .back-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
         }
     </style>
     
-    <!-- Firebase SDK version 12.7.0 (mismo que la tuya) -->
+    <!-- Firebase SDK version 12.7.0 -->
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getDatabase, ref, set, get, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
         
         // Tu configuración de Firebase
         const firebaseConfig = {
@@ -911,7 +1014,6 @@
         window.firebaseDatabase = database;
         window.firebaseRef = ref;
         window.firebaseSet = set;
-        window.firebaseGet = get;
         window.firebaseRemove = remove;
         window.firebaseOnValue = onValue;
         
@@ -931,16 +1033,13 @@
                 <h3>Acceso Administrador</h3>
                 <div class="form-group">
                     <label for="username">Usuario:</label>
-                    <input type="text" id="username" placeholder="Ingresa tu usuario">
+                    <input type="text" id="username" placeholder="Ingresa tu usuario" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña:</label>
-                    <input type="password" id="password" placeholder="Ingresa tu contraseña">
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña" autocomplete="off">
                 </div>
                 <button id="submitLogin" class="submit-btn">Ingresar</button>
-                <p style="margin-top: 0.7rem; font-size: 0.8rem; color: #666;">
-                    Credenciales: Usuario: <strong>Admin</strong>, Contraseña: <strong>Aa.1234#</strong>
-                </p>
             </div>
             <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
             <button id="adminViewBtn" class="admin-view-btn" style="display: none;">Vista Admin</button>
@@ -1289,6 +1388,7 @@
         let currentUser = null;
         let currentDepartment = null;
         let deviceId = null;
+        let lastView = 'departmentSelection'; // Para manejar navegación
 
         // Elementos del DOM
         const loginBtn = document.getElementById('loginBtn');
@@ -1491,6 +1591,12 @@
             submitLogin.addEventListener('click', handleLogin);
             
             // También permitir login con Enter
+            usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+            
             passwordInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     handleLogin();
@@ -1510,8 +1616,13 @@
             
             // Botón para refrescar datos
             refreshCloudBtn.addEventListener('click', () => {
-                loadAnnouncementsFromFirebase();
-                showMessage('Datos actualizados correctamente.', 'success');
+                syncStatusText.textContent = 'Actualizando datos...';
+                syncStatus.className = 'message info';
+                setTimeout(() => {
+                    syncStatusText.textContent = `✅ Sincronizado con la nube (${announcements.length} anuncios)`;
+                    syncStatus.className = 'message success';
+                    showMessage('Datos actualizados correctamente.', 'success');
+                }, 500);
             });
             
             // Botones de navegación
@@ -1524,20 +1635,11 @@
             });
             
             backToSelectionBtn.addEventListener('click', () => {
-                if (currentDepartment === "JA" || currentDepartment === "Aventureros" || 
-                    currentDepartment === "Conquistadores" || currentDepartment === "Guías Mayores") {
-                    if (currentDepartment === "JA") {
-                        showView('juvenil');
-                    } else {
-                        showView('clubes');
-                    }
-                } else {
-                    showView('departmentSelection');
-                }
+                goBack();
             });
             
             backToAnnouncementsBtn.addEventListener('click', () => {
-                showView('announcements');
+                goBack();
             });
             
             backToMainFromAdminBtn.addEventListener('click', () => {
@@ -1596,6 +1698,32 @@
             });
         }
 
+        // Función para volver atrás
+        function goBack() {
+            if (announcementFormSection.classList.contains('active')) {
+                // Si estamos en formulario, volver a anuncios
+                showView('announcements');
+            } else if (announcementsSection.classList.contains('active')) {
+                // Si estamos en anuncios, volver a selección
+                if (currentDepartment === "JA") {
+                    showView('juvenil');
+                } else if (["Aventureros", "Conquistadores", "Guías Mayores"].includes(currentDepartment)) {
+                    showView('clubes');
+                } else {
+                    showView('departmentSelection');
+                }
+            } else if (clubesSelection.style.display === 'block') {
+                // Si estamos en clubes, volver a juvenil
+                showView('juvenil');
+            } else if (juvenilSelection.style.display === 'block') {
+                // Si estamos en juvenil, volver a departamentos
+                showView('departmentSelection');
+            } else if (adminPanel.classList.contains('active')) {
+                // Si estamos en admin, volver a departamentos
+                showView('departmentSelection');
+            }
+        }
+
         // Manejar login de administrador
         function handleLogin() {
             const username = usernameInput.value.trim();
@@ -1640,6 +1768,11 @@
 
         // Mostrar diferentes vistas
         function showView(view) {
+            // Guardar la vista anterior
+            if (view !== lastView) {
+                lastView = getCurrentView();
+            }
+            
             // Ocultar todas las vistas primero
             hideAllViews();
             
@@ -1662,6 +1795,17 @@
                 adminPanel.classList.add('active');
                 renderAdminAnnouncements();
             }
+        }
+
+        // Obtener vista actual
+        function getCurrentView() {
+            if (departmentSelection.style.display === 'block') return 'departmentSelection';
+            if (juvenilSelection.style.display === 'block') return 'juvenil';
+            if (clubesSelection.style.display === 'block') return 'clubes';
+            if (announcementFormSection.classList.contains('active')) return 'form';
+            if (announcementsSection.classList.contains('active')) return 'announcements';
+            if (adminPanel.classList.contains('active')) return 'admin';
+            return 'departmentSelection';
         }
 
         // Ocultar todas las vistas
@@ -1855,6 +1999,9 @@
                 if (firebaseSuccess) {
                     // Mostrar mensaje
                     showMessage('Anuncio eliminado exitosamente de la nube.', 'success');
+                    
+                    // NOTA: No necesitamos hacer nada más porque Firebase en tiempo real
+                    // actualizará automáticamente la lista de anuncios
                 } else {
                     showMessage('Error al eliminar el anuncio. Intenta nuevamente.', 'error');
                 }
@@ -1870,10 +2017,12 @@
             
             // Mostrar mensaje si no hay anuncios
             const emptyMessage = document.getElementById('emptyMessage');
+            const announcementsContainer = document.getElementById('announcementsContainer');
+            
             if (departmentAnnouncements.length === 0) {
                 emptyMessage.style.display = 'block';
-                document.getElementById('announcementsContainer').innerHTML = '';
-                document.getElementById('announcementsContainer').appendChild(emptyMessage);
+                announcementsContainer.innerHTML = '';
+                announcementsContainer.appendChild(emptyMessage);
                 return;
             }
             
@@ -1899,7 +2048,7 @@
                 });
                 
                 announcementsHTML += `
-                    <div class="announcement-card">
+                    <div class="announcement-card" id="announcement-${announcement.id}">
                         <h3>${announcement.title}</h3>
                         <div class="announcement-category">${announcement.department}</div>
                         <div class="announcement-meta">
@@ -1919,17 +2068,19 @@
                 `;
             });
             
-            document.getElementById('announcementsContainer').innerHTML = announcementsHTML;
+            announcementsContainer.innerHTML = announcementsHTML;
         }
 
         // Renderizar todos los anuncios en el panel de administrador
         function renderAdminAnnouncements() {
             // Mostrar mensaje si no hay anuncios
             const adminEmptyMessage = document.getElementById('adminEmptyMessage');
+            const adminAnnouncementsContainer = document.getElementById('adminAnnouncements');
+            
             if (announcements.length === 0) {
                 adminEmptyMessage.style.display = 'block';
-                document.getElementById('adminAnnouncements').innerHTML = '';
-                document.getElementById('adminAnnouncements').appendChild(adminEmptyMessage);
+                adminAnnouncementsContainer.innerHTML = '';
+                adminAnnouncementsContainer.appendChild(adminEmptyMessage);
                 return;
             }
             
@@ -1958,7 +2109,7 @@
                 });
                 
                 adminAnnouncementsHTML += `
-                    <div class="announcement-card">
+                    <div class="announcement-card" id="admin-announcement-${announcement.id}">
                         <div class="announcement-actions">
                             <button class="action-btn edit-btn" onclick="openEditPanel(${announcement.id})">
                                 ✏️
@@ -1989,7 +2140,7 @@
                 `;
             });
             
-            document.getElementById('adminAnnouncements').innerHTML = adminAnnouncementsHTML;
+            adminAnnouncementsContainer.innerHTML = adminAnnouncementsHTML;
         }
 
         // Mostrar mensajes temporales
