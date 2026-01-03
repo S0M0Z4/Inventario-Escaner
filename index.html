@@ -1454,6 +1454,7 @@
         let deviceId = null;
         let lastView = 'departmentSelection'; // Para manejar navegación
         let isProcessing = false; // Para evitar múltiples operaciones simultáneas
+        let isInitialLoad = true; // Para controlar carga inicial
 
         // Elementos del DOM
         const loginBtn = document.getElementById('loginBtn');
@@ -1509,6 +1510,12 @@
             
             currentUser = localStorage.getItem('currentUserId');
             
+            // Restaurar el departamento seleccionado desde LocalStorage
+            const savedDepartment = localStorage.getItem('selectedDepartment');
+            if (savedDepartment) {
+                currentDepartment = savedDepartment;
+            }
+            
             // Mostrar estado de conexión
             syncStatus.style.display = 'block';
             syncStatusText.textContent = 'Conectando con la base de datos...';
@@ -1526,8 +1533,37 @@
             // Configurar event listeners
             setupEventListeners();
             
-            // Mostrar vista inicial
-            showView('departmentSelection');
+            // Manejar vista basada en hash de URL
+            const hash = window.location.hash.substring(1);
+            if (currentDepartment && hash === 'announcements') {
+                document.getElementById('currentDepartmentTitle').textContent = `Anuncios: ${currentDepartment}`;
+                showView('announcements');
+            } else if (hash === 'admin' && isAdminLoggedIn) {
+                showView('admin');
+            } else {
+                // Mostrar vista inicial
+                showView('departmentSelection');
+            }
+            
+            isInitialLoad = false;
+            
+            // Escuchar cambios en el hash de URL
+            window.addEventListener('hashchange', handleHashChange);
+        }
+
+        // Manejar cambios en el hash de URL
+        function handleHashChange() {
+            if (isInitialLoad) return;
+            
+            const hash = window.location.hash.substring(1);
+            if (hash === 'announcements' && currentDepartment) {
+                document.getElementById('currentDepartmentTitle').textContent = `Anuncios: ${currentDepartment}`;
+                showView('announcements');
+            } else if (hash === 'admin' && isAdminLoggedIn) {
+                showView('admin');
+            } else {
+                showView('departmentSelection');
+            }
         }
 
         // Actualizar estado de conexión
@@ -1878,20 +1914,39 @@
             if (view === 'departmentSelection') {
                 departmentSelection.style.display = 'block';
                 document.getElementById('welcomeMessage').style.display = 'block';
+                // Limpiar el departamento seleccionado cuando volvemos a la selección
+                localStorage.removeItem('selectedDepartment');
+                currentDepartment = null;
+                window.location.hash = '';
             } else if (view === 'juvenil') {
                 juvenilSelection.style.display = 'block';
+                // Limpiar departamento si estamos en selección
+                localStorage.removeItem('selectedDepartment');
+                currentDepartment = null;
+                window.location.hash = '';
             } else if (view === 'clubes') {
                 clubesSelection.style.display = 'block';
+                // Limpiar departamento si estamos en selección
+                localStorage.removeItem('selectedDepartment');
+                currentDepartment = null;
+                window.location.hash = '';
             } else if (view === 'form') {
                 announcementFormSection.classList.add('active');
                 document.getElementById('formSectionTitle').textContent = `Crear Anuncio para: ${currentDepartment}`;
                 document.getElementById('selectedDepartment').value = currentDepartment;
+                window.location.hash = 'form';
             } else if (view === 'announcements') {
                 announcementsSection.classList.add('active');
+                // Asegurarnos de que el título sea correcto
+                if (currentDepartment) {
+                    document.getElementById('currentDepartmentTitle').textContent = `Anuncios: ${currentDepartment}`;
+                }
                 renderAnnouncements();
+                window.location.hash = 'announcements';
             } else if (view === 'admin') {
                 adminPanel.classList.add('active');
                 renderAdminAnnouncements();
+                window.location.hash = 'admin';
             }
         }
 
@@ -1920,6 +1975,8 @@
         // Seleccionar un departamento
         function selectDepartment(department) {
             currentDepartment = department;
+            // Guardar en LocalStorage
+            localStorage.setItem('selectedDepartment', department);
             document.getElementById('currentDepartmentTitle').textContent = `Anuncios: ${department}`;
             showView('announcements');
         }
@@ -2002,6 +2059,10 @@
                 
                 // Recargar la página después de 2 segundos
                 setTimeout(() => {
+                    // Limpiar hash de URL y departamento seleccionado
+                    window.location.hash = '';
+                    localStorage.removeItem('selectedDepartment');
+                    currentDepartment = null;
                     window.location.reload();
                 }, 2000);
                 
@@ -2074,6 +2135,10 @@
                     
                     // Recargar la página después de 2 segundos
                     setTimeout(() => {
+                        // Limpiar hash de URL y departamento seleccionado
+                        window.location.hash = '';
+                        localStorage.removeItem('selectedDepartment');
+                        currentDepartment = null;
                         window.location.reload();
                     }, 2000);
                     
@@ -2142,6 +2207,10 @@
                     
                     // Recargar la página después de 2 segundos
                     setTimeout(() => {
+                        // Limpiar hash de URL y departamento seleccionado
+                        window.location.hash = '';
+                        localStorage.removeItem('selectedDepartment');
+                        currentDepartment = null;
                         window.location.reload();
                     }, 2000);
                     
@@ -2153,16 +2222,24 @@
 
         // Renderizar anuncios del departamento actual
         function renderAnnouncements() {
-            if (!currentDepartment) return;
+            const emptyMessage = document.getElementById('emptyMessage');
+            const announcementsContainer = document.getElementById('announcementsContainer');
+            
+            // Si no hay departamento seleccionado, mostrar mensaje
+            if (!currentDepartment) {
+                emptyMessage.textContent = 'Por favor selecciona un departamento primero.';
+                emptyMessage.style.display = 'block';
+                announcementsContainer.innerHTML = '';
+                announcementsContainer.appendChild(emptyMessage);
+                return;
+            }
             
             // Filtrar anuncios del departamento actual
             let departmentAnnouncements = announcements.filter(ann => ann.department === currentDepartment);
             
             // Mostrar mensaje si no hay anuncios
-            const emptyMessage = document.getElementById('emptyMessage');
-            const announcementsContainer = document.getElementById('announcementsContainer');
-            
             if (departmentAnnouncements.length === 0) {
+                emptyMessage.textContent = `No hay anuncios para ${currentDepartment}. ¡Crea el primer anuncio!`;
                 emptyMessage.style.display = 'block';
                 announcementsContainer.innerHTML = '';
                 announcementsContainer.appendChild(emptyMessage);
