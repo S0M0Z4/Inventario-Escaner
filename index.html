@@ -1361,16 +1361,24 @@
             <form id="announcementForm" class="announcement-form">
                 <input type="hidden" id="selectedDepartment">
                 <div class="form-control">
-                    <label for="time">Hora del evento:</label>
+                    <label for="time">Hora de inicio:</label>
                     <input type="time" id="time" required>
+                </div>
+                <div class="form-control">
+                    <label for="endTime">Hora de fin (opcional):</label>
+                    <input type="time" id="endTime">
+                </div>
+                <div class="form-control">
+                    <label for="date">Fecha de inicio:</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-control">
+                    <label for="endDate">Fecha de fin (opcional):</label>
+                    <input type="date" id="endDate">
                 </div>
                 <div class="form-control">
                     <label for="title">Título del anuncio:</label>
                     <input type="text" id="title" placeholder="Ej: Reunión de oración" required>
-                </div>
-                <div class="form-control">
-                    <label for="date">Fecha del evento:</label>
-                    <input type="date" id="date" required>
                 </div>
                 <div class="form-control">
                     <label for="author">Tu nombre (autor):</label>
@@ -1453,16 +1461,24 @@
                         <input type="text" id="editDepartment" readonly style="background-color: #f3f4f6;">
                     </div>
                     <div class="form-control">
-                        <label for="editTime">Hora del evento:</label>
+                        <label for="editTime">Hora de inicio:</label>
                         <input type="time" id="editTime" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editEndTime">Hora de fin (opcional):</label>
+                        <input type="time" id="editEndTime">
+                    </div>
+                    <div class="form-control">
+                        <label for="editDate">Fecha de inicio:</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editEndDate">Fecha de fin (opcional):</label>
+                        <input type="date" id="editEndDate">
                     </div>
                     <div class="form-control">
                         <label for="editTitle">Título del anuncio:</label>
                         <input type="text" id="editTitle" placeholder="Ej: Reunión de oración" required>
-                    </div>
-                    <div class="form-control">
-                        <label for="editDate">Fecha del evento:</label>
-                        <input type="date" id="editDate" required>
                     </div>
                     <div class="form-control">
                         <label for="editAuthorDisplay">Autor:</label>
@@ -1565,7 +1581,9 @@
             // Establecer fecha mínima en los campos de fecha
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date').min = today;
+            document.getElementById('endDate').min = today;
             document.getElementById('editDate').min = today;
+            document.getElementById('editEndDate').min = today;
             
             // Generar un ID único para el dispositivo
             if (!localStorage.getItem('deviceId')) {
@@ -2021,14 +2039,16 @@
             // Obtener valores del formulario
             const department = document.getElementById('selectedDepartment').value;
             const time = document.getElementById('time').value;
+            const endTime = document.getElementById('endTime').value || null;
             const title = document.getElementById('title').value.trim();
             const description = document.getElementById('description').value.trim();
             const date = document.getElementById('date').value;
+            const endDate = document.getElementById('endDate').value || null;
             const author = document.getElementById('author').value.trim();
             
             // Validar campos
             if (!time || !title || !description || !date || !author) {
-                showMessage('Por favor completa todos los campos.', 'error');
+                showMessage('Por favor completa todos los campos obligatorios.', 'error');
                 isProcessing = false;
                 return;
             }
@@ -2043,9 +2063,11 @@
                 id: Date.now(), // Usar timestamp como ID único
                 department,
                 time,
+                endTime,
                 title,
                 description,
                 date: date,
+                endDate,
                 author: author,
                 authorId: currentUser,
                 deviceId: deviceId,
@@ -2065,8 +2087,10 @@
             if (firebaseSuccess) {
                 // Limpiar formulario (excepto el nombre del autor)
                 document.getElementById('time').value = '';
+                document.getElementById('endTime').value = '';
                 document.getElementById('title').value = '';
                 document.getElementById('date').value = '';
+                document.getElementById('endDate').value = '';
                 document.getElementById('description').value = '';
                 
                 // Mostrar modal de éxito
@@ -2099,14 +2123,16 @@
             // Obtener valores del formulario
             const id = parseInt(document.getElementById('editId').value);
             const time = document.getElementById('editTime').value;
+            const endTime = document.getElementById('editEndTime').value || null;
             const title = document.getElementById('editTitle').value.trim();
             const description = document.getElementById('editDescription').value.trim();
             const date = document.getElementById('editDate').value;
+            const endDate = document.getElementById('editEndDate').value || null;
             const author = document.getElementById('editAuthorDisplay').value.trim();
             
             // Validar campos
             if (!time || !title || !description || !date || !author) {
-                showMessage('Por favor completa todos los campos.', 'error');
+                showMessage('Por favor completa todos los campos obligatorios.', 'error');
                 isProcessing = false;
                 return;
             }
@@ -2124,9 +2150,11 @@
                 const updatedAnnouncement = {
                     ...announcement,
                     time,
+                    endTime,
                     title,
                     description,
                     date,
+                    endDate,
                     author,
                     updatedAt: new Date().toISOString()
                 };
@@ -2182,8 +2210,10 @@
                 document.getElementById('editAuthorDisplay').value = announcement.author;
                 document.getElementById('editDepartment').value = announcement.department;
                 document.getElementById('editTime').value = announcement.time;
+                document.getElementById('editEndTime').value = announcement.endTime || '';
                 document.getElementById('editTitle').value = announcement.title;
                 document.getElementById('editDate').value = announcement.date;
+                document.getElementById('editEndDate').value = announcement.endDate || '';
                 document.getElementById('editDescription').value = announcement.description;
                 
                 // Mostrar el panel de edición
@@ -2278,8 +2308,10 @@
                         <h3>${announcement.title}</h3>
                         <div class="announcement-category">${announcement.department}</div>
                         <div class="announcement-meta">
-                            <span><strong>Hora:</strong> ${announcement.time}</span>
-                            <span><strong>Fecha:</strong> ${announcement.date}</span>
+                            <span><strong>Hora de inicio:</strong> ${announcement.time}</span>
+                            ${announcement.endTime ? `<span><strong>Hora de fin:</strong> ${announcement.endTime}</span>` : ''}
+                            <span><strong>Fecha de inicio:</strong> ${announcement.date}</span>
+                            ${announcement.endDate ? `<span><strong>Fecha de fin:</strong> ${announcement.endDate}</span>` : ''}
                         </div>
                         <div class="announcement-description">
                             ${announcement.description}
@@ -2347,8 +2379,10 @@
                         <h3>${announcement.title}</h3>
                         <div class="announcement-category">${announcement.department}</div>
                         <div class="announcement-meta">
-                            <span><strong>Hora:</strong> ${announcement.time}</span>
-                            <span><strong>Fecha:</strong> ${announcement.date}</span>
+                            <span><strong>Hora de inicio:</strong> ${announcement.time}</span>
+                            ${announcement.endTime ? `<span><strong>Hora de fin:</strong> ${announcement.endTime}</span>` : ''}
+                            <span><strong>Fecha de inicio:</strong> ${announcement.date}</span>
+                            ${announcement.endDate ? `<span><strong>Fecha de fin:</strong> ${announcement.endDate}</span>` : ''}
                         </div>
                         <div class="announcement-description">
                             ${announcement.description}
